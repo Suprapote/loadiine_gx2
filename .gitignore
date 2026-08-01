@@ -5,6 +5,8 @@
 /server/logs/*.txt
 /build
 /*.elf
+/*.rpx
+/*.wuhb
 /fs/*.elf
 /loader/*.elf
 /sd_loader/build
