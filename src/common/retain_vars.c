@@ -1,4 +1,8 @@
-#include <gctypes.h>
+#include <wut_types.h>
+#include "../common/kernel_defs.h"
+#include "types.h"
+
+ReducedCosAppXmlInfo cosAppXmlInfoStruct __attribute__((section(".data")));
 u8 gSettingLaunchPyGecko __attribute__((section(".data"))) = 0;
 u8 gSettingUseUpdatepath __attribute__((section(".data"))) = 0;
 u8 gSettingPadconMode __attribute__((section(".data"))) = 0;
@@ -11,3 +15,4 @@ u8 gEnableDLC __attribute__((section(".data"))) = 0;
 u32 gLoaderPhysicalBufferAddr __attribute__((section(".data"))) = 0;
 u32 gLogUDP __attribute__((section(".data"))) = 0;
 char gServerIP[16] __attribute__((section(".data")));
+char gAoc_Id[256] __attribute__((section(".data")));

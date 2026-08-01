@@ -50,7 +50,7 @@ GuiImageAsync::~GuiImageAsync()
 {
 	threadRemoveImage(this);
 	while(pInUse == this)
-        os_usleep(1000);
+        usleep(1000);
 
 	if (imgData)
         delete imgData;
@@ -117,7 +117,7 @@ void GuiImageAsync::guiImageAsyncThread(CThread *thread, void *arg)
                 s32 iResult = LoadFileToMem(pInUse->filename.c_str(), &buffer, &bufferSize);
                 if(iResult > 0)
                 {
-                    pInUse->imgData = new GuiImageData(buffer, bufferSize, GX2_TEX_CLAMP_MIRROR);
+                    pInUse->imgData = new GuiImageData(buffer, bufferSize, GX2_TEX_CLAMP_MODE_MIRROR);
 
                     //! free original image buffer which is converted to texture now and not needed anymore
                     free(buffer);

@@ -2,7 +2,6 @@
 #define __UTILS_H_
 
 #include <malloc.h>
-#include "../common/types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,16 +21,9 @@ extern "C" {
 #define ALIGN4(x)           (((x) + 3) & ~3)
 #define ALIGN32(x)          (((x) + 31) & ~31)
 
-// those work only in powers of 2
-#define ROUNDDOWN(val, align)   ((val) & ~(align-1))
-#define ROUNDUP(val, align)     ROUNDDOWN(((val) + (align-1)), align)
-
 #define le16(i)         ((((u16) ((i) & 0xFF)) << 8) | ((u16) (((i) & 0xFF00) >> 8)))
 #define le32(i)         ((((u32)le16((i) & 0xFFFF)) << 16) | ((u32)le16(((i) & 0xFFFF0000) >> 16)))
 #define le64(i)         ((((u64)le32((i) & 0xFFFFFFFFLL)) << 32) | ((u64)le32(((i) & 0xFFFFFFFF00000000LL) >> 32)))
-
-void m_DCFlushRange(unsigned int startAddr, unsigned int size);
-void m_DCInvalidateRange(unsigned int startAddr, unsigned int size);
 
 #ifdef __cplusplus
 }

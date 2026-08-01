@@ -26,7 +26,6 @@
 #include <unistd.h>
 #include <malloc.h>
 #include "common/common.h"
-#include "dynamic_libs/ax_functions.h"
 #include "fs/CFile.hpp"
 #include "SoundHandler.hpp"
 #include "WavDecoder.hpp"
@@ -50,7 +49,7 @@ SoundHandler::SoundHandler()
 
     //! wait for initialization
     while(!isThreadSuspended())
-        os_usleep(1000);
+        usleep(1000);
 }
 
 SoundHandler::~SoundHandler()
@@ -61,7 +60,7 @@ SoundHandler::~SoundHandler()
 	ClearDecoderList();
 }
 
-void SoundHandler::AddDecoder(s32 voice, const char * filepath)
+void SoundHandler::AddDecoder(int voice, const char * filepath)
 {
 	if(voice < 0 || voice >= MAX_DECODERS)
 		return;
@@ -72,7 +71,7 @@ void SoundHandler::AddDecoder(s32 voice, const char * filepath)
 	DecoderList[voice] = GetSoundDecoder(filepath);
 }
 
-void SoundHandler::AddDecoder(s32 voice, const u8 * snd, s32 len)
+void SoundHandler::AddDecoder(int voice, const u8 * snd, int len)
 {
 	if(voice < 0 || voice >= MAX_DECODERS)
 		return;
@@ -83,7 +82,7 @@ void SoundHandler::AddDecoder(s32 voice, const u8 * snd, s32 len)
 	DecoderList[voice] = GetSoundDecoder(snd, len);
 }
 
-void SoundHandler::RemoveDecoder(s32 voice)
+void SoundHandler::RemoveDecoder(int voice)
 {
 	if(voice < 0 || voice >= MAX_DECODERS)
 		return;
@@ -95,8 +94,12 @@ void SoundHandler::RemoveDecoder(s32 voice)
             if(voiceList[voice]->getState() != Voice::STATE_STOP)
                 voiceList[voice]->setState(Voice::STATE_STOP);
 
-            while(voiceList[voice]->getState() != Voice::STATE_STOPPED)
-                os_usleep(1000);
+            // it shouldn't take longer than 3 ms actually but we wait up to 20
+            // on application quit the AX frame callback is not called anymore
+            // therefore this would end in endless loop if no timeout is defined
+            int timeOut = 20;
+            while(--timeOut && (voiceList[voice]->getState() != Voice::STATE_STOPPED))
+                usleep(1000);
         }
         SoundDecoder *decoder = DecoderList[voice];
         decoder->Lock();
@@ -137,7 +140,7 @@ static inline bool CheckMP3Signature(const u8 * buffer)
 		return true;
 	}
 
-	for(s32 i = 1; i < 13; i++)
+	for(int i = 1; i < 13; i++)
 	{
 		if(buffer[0] == MP3_Magic[i][0] && buffer[1] == MP3_Magic[i][1])
 			return true;
@@ -182,10 +185,10 @@ SoundDecoder * SoundHandler::GetSoundDecoder(const char * filepath)
 	return new SoundDecoder(filepath);
 }
 
-SoundDecoder * SoundHandler::GetSoundDecoder(const u8 * sound, s32 length)
+SoundDecoder * SoundHandler::GetSoundDecoder(const u8 * sound, int length)
 {
 	const u8 * check = sound;
-	s32 counter = 0;
+	int counter = 0;
 
 	while(check[0] == 0 && counter < length)
 	{
@@ -216,30 +219,27 @@ SoundDecoder * SoundHandler::GetSoundDecoder(const u8 * sound, s32 length)
 
 void SoundHandler::executeThread()
 {
-    // v2 sound lib can not properly end transition audio on old firmwares
-    if (OS_FIRMWARE >= 400 && OS_FIRMWARE <= 410)
-    {
-        ProperlyEndTransitionAudio();
-    }
-
     //! initialize 48 kHz renderer
-    u32 params[3] = { 1, 0, 0 };
+    AXInitParams params;
+    memset(&params, 0, sizeof(params));
+    params.renderer = AX_INIT_RENDERER_48KHZ;
 
-    if(AXInitWithParams != 0)
-        AXInitWithParams(params);
-    else
-        AXInit();
+    // TODO: handle support for 3.1.0 with dynamic libs instead of static linking it
+    //if(AXInitWithParams != 0)
+        AXInitWithParams(&params);
+    //else
+    //    AXInit();
 
     // The problem with last voice on 500 was caused by it having priority 0
     // We would need to change this priority distribution if for some reason
     // we would need MAX_DECODERS > Voice::PRIO_MAX
     for(u32 i = 0; i < MAX_DECODERS; ++i)
     {
-        s32 priority = (MAX_DECODERS - i) * Voice::PRIO_MAX  / MAX_DECODERS;
+        int priority = (MAX_DECODERS - i) * Voice::PRIO_MAX  / MAX_DECODERS;
         voiceList[i] = new Voice(priority); // allocate voice 0 with highest priority
     }
 
-    AXRegisterFrameCallback((void*)&axFrameCallback);
+    AXRegisterAppFrameCallback(SoundHandler::axFrameCallback);
 
 
 	u16 i = 0;
@@ -266,7 +266,7 @@ void SoundHandler::executeThread()
 	for(u32 i = 0; i < MAX_DECODERS; ++i)
         voiceList[i]->stop();
 
-    AXRegisterFrameCallback(NULL);
+    AXRegisterAppFrameCallback(NULL);
     AXQuit();
 
     for(u32 i = 0; i < MAX_DECODERS; ++i)

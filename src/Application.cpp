@@ -15,7 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 #include "Application.h"
-#include "dynamic_libs/os_functions.h"
+
+#include <coreinit/foreground.h>
+#include <proc_ui/procui.h>
+#include <coreinit/memdefaultheap.h>
+#include <nn/erreula.h>
+#include "Application.h"
 #include "gui/FreeTypeGX.h"
 #include "gui/GuiImageAsync.h"
 #include "gui/VPadController.h"
@@ -26,14 +31,23 @@
 #include "settings/CSettingsGame.h"
 #include "sounds/SoundHandler.hpp"
 #include "system/exception_handler.h"
-#include "controller_patcher/ControllerPatcher.hpp"
+#include "system/memory.h"
 #include "utils/logger.h"
-#include "common/retain_vars.h"
-//#include "controller_patcher/cp_retain_vars.h"
 #include "video/CursorDrawer.h"
+#include "language/gettext.h"
+#include "common/retain_vars.h"
 
 Application *Application::applicationInstance = NULL;
 bool Application::exitApplication = false;
+bool Application::quitRequest = false;
+
+u32 Application::hbmDeniedCallback(void *context)
+{
+	nn::erreula::HomeNixSignArg homeNixSignArg;
+	nn::erreula::AppearHomeNixSign(homeNixSignArg);
+	
+	return 0;
+}
 
 Application::Application()
 	: CThread(CThread::eAttributeAffCore0 | CThread::eAttributePinnedAff, 0, 0x20000)
@@ -47,34 +61,11 @@ Application::Application()
     controller[3] = new WPadController(GuiTrigger::CHANNEL_4);
     controller[4] = new WPadController(GuiTrigger::CHANNEL_5);
 
-    CSettings::instance()->Load();
-
-    //! load HID settings
-    gHIDPADEnabled = CSettings::getValueAsU8(CSettings::HIDPadEnabled);
-
-    //! load resources
-    Resources::LoadFiles("sd:/wiiu/apps/loadiine_gx2/resources");
-
-    //! create bgMusic
-    if(CSettings::getValueAsString(CSettings::BgMusicPath).empty())
-    {
-        bgMusic = new GuiSound(Resources::GetFile("bgMusic.ogg"), Resources::GetFileSize("bgMusic.ogg"));
-    }
-    else
-    {
-        bgMusic = new GuiSound(CSettings::getValueAsString(CSettings::BgMusicPath).c_str());
-    }
-    bgMusic->SetLoop(true);
-    bgMusic->Play();
-    bgMusic->SetVolume(50);
-
-	//! load language
-    if(!CSettings::getValueAsString(CSettings::AppLanguage).empty()){
-        std::string languagePath = "sd:/wiiu/apps/loadiine_gx2/languages/" + CSettings::getValueAsString(CSettings::AppLanguage) + ".lang";
-		gettextLoadLanguage(languagePath.c_str());
-    }
 
 	exitApplication = false;
+
+	ProcUIInit(OSSavesDone_ReadyToRelease);
+	ProcUIRegisterCallback(PROCUI_CALLBACK_HOME_BUTTON_DENIED, hbmDeniedCallback, NULL, 1);
 }
 
 Application::~Application()
@@ -91,15 +82,6 @@ Application::~Application()
     for(int i = 0; i < 5; i++)
         delete controller[i];
 
-    //We may have to handle Asyncdelete in the Destructors.
-    DEBUG_FUNCTION_LINE("Destroy async deleter\n");
-    do{
-        DEBUG_FUNCTION_LINE("Triggering AsyncDeleter\n");
-        AsyncDeleter::triggerDeleteProcess();
-        while(!AsyncDeleter::realListEmpty()){
-            os_usleep(1000);
-        }
-    }while(!AsyncDeleter::deleteListEmpty());
     AsyncDeleter::destroyInstance();
 
 
@@ -110,11 +92,12 @@ Application::~Application()
 
 	gettextCleanUp();
 
-	if(!gHIDPADEnabled){
+	/*if(!gHIDPADEnabled){
         ControllerPatcher::destroyConfigHelper();
-    }
+    }*/
 
     CursorDrawer::destroyInstance();
+	ProcUIShutdown();
 }
 
 void Application::exec()
@@ -123,6 +106,12 @@ void Application::exec()
     resumeThread();
     //! now wait for thread to finish
 	shutdownThread();
+}
+
+void Application::quit()
+{
+	exitApplication = true;
+    quitRequest = true;
 }
 
 void Application::fadeOut()
@@ -140,9 +129,9 @@ void Application::fadeOut()
 	    video->prepareDrcRendering();
 	    mainWindow->drawDrc(video);
 
-        GX2SetDepthOnlyControl(GX2_DISABLE, GX2_DISABLE, GX2_COMPARE_ALWAYS);
+        GX2SetDepthOnlyControl(GX2_DISABLE, GX2_DISABLE, GX2_COMPARE_FUNC_ALWAYS);
         fadeOut.draw(video);
-        GX2SetDepthOnlyControl(GX2_ENABLE, GX2_ENABLE, GX2_COMPARE_LEQUAL);
+        GX2SetDepthOnlyControl(GX2_ENABLE, GX2_ENABLE, GX2_COMPARE_FUNC_LEQUAL);
 
 	    video->drcDrawDone();
 
@@ -151,9 +140,9 @@ void Application::fadeOut()
 
 	    mainWindow->drawTv(video);
 
-        GX2SetDepthOnlyControl(GX2_DISABLE, GX2_DISABLE, GX2_COMPARE_ALWAYS);
+        GX2SetDepthOnlyControl(GX2_DISABLE, GX2_DISABLE, GX2_COMPARE_FUNC_ALWAYS);
         fadeOut.draw(video);
-        GX2SetDepthOnlyControl(GX2_ENABLE, GX2_ENABLE, GX2_COMPARE_LEQUAL);
+        GX2SetDepthOnlyControl(GX2_ENABLE, GX2_ENABLE, GX2_COMPARE_FUNC_LEQUAL);
 
 	    video->tvDrawDone();
 
@@ -173,46 +162,149 @@ void Application::fadeOut()
     video->drcEnable(false);
 }
 
+bool Application::procUI(void)
+{
+    bool executeProcess = false;
+	
+	switch(ProcUIProcessMessages(true))
+    {
+		case PROCUI_STATUS_EXITING:
+		{
+			log_printf("PROCUI_STATUS_EXITING\n");
+			exitApplication = true;
+			break;
+		}
+		case PROCUI_STATUS_RELEASE_FOREGROUND:
+		{
+			log_printf("PROCUI_STATUS_RELEASE_FOREGROUND\n");
+			if(video != nullptr)
+			{
+				// we can turn of the screen but we don't need to and it will display the last image
+				video->tvEnable(true);
+				video->drcEnable(true);
+				
+				log_printf("delete fontSystem\n");
+				delete fontSystem;
+				fontSystem = nullptr;
+				
+				log_printf("delete video\n");
+				delete video;
+				video = nullptr;
+				
+				log_printf("deinitialze memory\n");
+				memoryRelease();
+				ProcUIDrawDoneRelease();
+			}
+			else
+			{
+				ProcUIDrawDoneRelease();
+			}
+			break;
+		}
+		case PROCUI_STATUS_IN_FOREGROUND:
+		{
+			if(!quitRequest)
+			{
+				if(video == nullptr)
+				{
+					log_printf("PROCUI_STATUS_IN_FOREGROUND\n");
+					log_printf("initialze memory\n");
+					memoryInitialize();
+					
+					log_printf("Loading game list\n");
+    				GameList::instance()->loadUnfiltered();
+
+					//! setup default Font
+					log_printf("Initialize main font system\n");
+					auto *fontSystem = new FreeTypeGX(Resources::GetFile("font.ttf"), Resources::GetFileSize("font.ttf"), true);
+					GuiText::setPresetFont(fontSystem);
+
+					log_printf("Initialize video\n");
+					video = new CVideo(GX2_TV_SCAN_MODE_720P, GX2_DRC_RENDER_MODE_SINGLE);
+					log_printf("Video size %i x %i\n", video->getTvWidth(), video->getTvHeight());
+
+					mainStartUp = new MainStartUp(video);
+					//! load language
+					if(!CSettings::getValueAsString(CSettings::AppLanguage).empty())
+					{
+						std::string languagePath = "sd:/wiiu/apps/loadiine_gx2/languages/" + CSettings::getValueAsString(CSettings::AppLanguage) + ".lang";
+						gettextLoadLanguage(languagePath.c_str());
+					}
+					mainStartUp->SetText(trNOOP("Loaded language"));
+
+					//! reload logger to change IP to settings IP
+					
+					log_printf(CSettings::getValueAsString(CSettings::GameLogServerIp).c_str());
+					mainStartUp->SetText(trNOOP("Reloaded logger to change IP to settings IP"));
+
+					//! load HID settings
+					gHIDPADEnabled = CSettings::getValueAsU8(CSettings::HIDPadEnabled);
+					mainStartUp->SetText(trNOOP("Loaded HID settings"));
+
+					//! load resources
+					Resources::LoadFiles("sd:/wiiu/apps/loadiine_gx2/resources");
+					mainStartUp->SetText(trNOOP("Loaded resources"));
+
+					log_printf("Loading game list\n");
+					GameList::instance()->loadUnfiltered();
+					mainStartUp->SetText(trNOOP("Loading game list"));
+
+					//! create bgMusic
+					mainStartUp->SetText(trNOOP("Loading Music"));
+					if(CSettings::getValueAsString(CSettings::BgMusicPath).empty())
+					{
+						bgMusic = new GuiSound(Resources::GetFile("bgMusic.ogg"), Resources::GetFileSize("bgMusic.ogg"));
+					}
+					else
+					{
+						bgMusic = new GuiSound(CSettings::getValueAsString(CSettings::BgMusicPath).c_str());
+					}
+					bgMusic->SetLoop(true);
+					bgMusic->Play();
+					bgMusic->SetVolume(50);
+
+					if (mainWindow == nullptr)
+					{
+						log_printf("Initialize main window\n");
+						mainStartUp->SetText(trNOOP("Initializing main"));
+						mainWindow = new MainWindow(video->getTvWidth(), video->getTvHeight());
+					}
+				}
+				executeProcess = true;
+			}
+			break;
+		}
+		case PROCUI_STATUS_IN_BACKGROUND:
+		default:
+			break;
+    }
+
+    return executeProcess;
+}
+
 void Application::executeThread(void)
 {
     //! setup exceptions on the main GX2 core
     setup_os_exceptions();
 
-    DEBUG_FUNCTION_LINE("Loading game list\n");
-    GameList::instance()->loadUnfiltered();
-
-    DEBUG_FUNCTION_LINE("Initialize video\n");
-    video = new CVideo(GX2_TV_SCAN_MODE_720P, GX2_DRC_SINGLE);
-
-    DEBUG_FUNCTION_LINE("Video size %i x %i\n", video->getTvWidth(), video->getTvHeight());
-
-    //! setup default Font
-    DEBUG_FUNCTION_LINE("Initialize main font system\n");
-    FreeTypeGX *fontSystem = new FreeTypeGX(Resources::GetFile("font.ttf"), Resources::GetFileSize("font.ttf"), true);
-    GuiText::setPresetFont(fontSystem);
-
-    DEBUG_FUNCTION_LINE("Initialize main window\n");
-
-    mainWindow = new MainWindow(video->getTvWidth(), video->getTvHeight());
-
-    DEBUG_FUNCTION_LINE("Entering main loop\n");
+    log_printf("Entering main loop\n");
 
     //! main GX2 loop (60 Hz cycle with max priority on core 1)
 	while(!exitApplication)
 	{
-	    mainWindow->lockGUI();
-	    //! Read out inputs
-	    for(int i = 0; i < 5; i++)
-        {
-            if(controller[i]->update(video->getTvWidth(), video->getTvHeight()) == false)
-                continue;
-
-            if(controller[i]->data.buttons_d & VPAD_BUTTON_HOME)
-                exitApplication = true;
-
-            //! update controller states
-            mainWindow->update(controller[i]);
-        }
+	    if(procUI() == false)
+			continue;
+		
+		mainWindow->lockGUI();
+		//! Read out inputs
+		for(int i = 0; i < 5; i++)
+		{
+			if(controller[i]->update(video->getTvWidth(), video->getTvHeight()) == false)
+				continue;
+			
+			//! update controller states
+			mainWindow->update(controller[i]);
+		}
 
         //! start rendering DRC
 	    video->prepareDrcRendering();
@@ -242,9 +334,10 @@ void Application::executeThread(void)
         AsyncDeleter::triggerDeleteProcess();
 	}
 
-	fadeOut();
-
-    delete mainWindow;
-    delete fontSystem;
-    delete video;
+	log_printf("Exiting main loop\n");
+	
+    if(video)
+    {
+        fadeOut();
+    }
 }

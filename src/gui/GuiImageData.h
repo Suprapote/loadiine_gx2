@@ -17,9 +17,9 @@
 #ifndef GUI_IMAGEDATA_H_
 #define GUI_IMAGEDATA_H_
 
-#include <gctypes.h>
+#include <wut_types.h>
 #include <gd.h>
-#include "dynamic_libs/gx2_functions.h"
+#include "../common/gx2_ext.h"
 #include "system/AsyncDeleter.h"
 
 class GuiImageData : public AsyncDeleter::Element
@@ -29,22 +29,22 @@ public:
     GuiImageData();
     //!\param img Image data
     //!\param imgSize The image size
-    GuiImageData(const u8 * img, s32 imgSize, s32 textureClamp = GX2_TEX_CLAMP_CLAMP, s32 textureFormat = GX2_SURFACE_FORMAT_TCS_R8_G8_B8_A8_UNORM);
+    GuiImageData(const u8 * img, int imgSize, GX2TexClampMode textureClamp = GX2_TEX_CLAMP_MODE_CLAMP, GX2SurfaceFormat textureFormat = GX2_SURFACE_FORMAT_UNORM_R8_G8_B8_A8);
     //!Destructor
     virtual ~GuiImageData();
     //!Load image from buffer
     //!\param img Image data
     //!\param imgSize The image size
-    void loadImage(const u8 * img, s32 imgSize, s32 textureClamp = GX2_TEX_CLAMP_CLAMP, s32 textureFormat = GX2_SURFACE_FORMAT_TCS_R8_G8_B8_A8_UNORM);
+    void loadImage(const u8 * img, int imgSize, GX2TexClampMode textureClamp = GX2_TEX_CLAMP_MODE_CLAMP, GX2SurfaceFormat textureFormat = GX2_SURFACE_FORMAT_UNORM_R8_G8_B8_A8);
     //! getter functions
     const GX2Texture * getTexture() const { return texture; };
     const GX2Sampler * getSampler() const { return sampler; };
     //!Gets the image width
     //!\return image width
-    s32 getWidth() const { if(texture) return texture->surface.width; else return 0; };
+    int getWidth() const { if(texture) return texture->surface.width; else return 0; };
     //!Gets the image height
     //!\return image height
-    s32 getHeight() const { if(texture) return texture->surface.height; else return 0; };
+    int getHeight() const { if(texture) return texture->surface.height; else return 0; };
     //! release memory of the image data
     void releaseData(void);
 private:

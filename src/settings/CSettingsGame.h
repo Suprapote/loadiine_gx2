@@ -20,11 +20,12 @@
 #include <string>
 #include <map>
 #include <stdio.h>
-#include <gctypes.h>
+#include <wut_types.h>
 #include <vector>
 #include "SettingsGameDefs.h"
 #include "utils/logger.h"
 #include "SettingsEnums.h"
+#include "../common/types.h"
 
 class CSettingsGame
 {

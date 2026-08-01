@@ -6,7 +6,8 @@
 #include <malloc.h>
 #include "utils/StringTools.h"
 #include "common/common.h"
-#include "fs/fs_utils.c"
+#include <coreinit/filesystem.h>
+#include "../fs/fs_utils.h"
 
 
 FileReplacer::FileReplacer(std::string path,std::string content,std::string filename,void * pClient,void * pCmd){
@@ -24,7 +25,7 @@ FileReplacer::FileReplacer(std::string path,std::string content,std::string file
 
 FileReplacer::FileReplacer(std::string filepath,std::string content,std::string filename, ProgressWindow & progressWindow){
     int entries = 0;
-    progressWindow.setTitle("Creating filelist.txt:");
+    progressWindow.setInfo("Creating filelist.txt:");
 
     dir_all = new Directory("content");
     read_dir(filepath + std::string("/") + content, dir_all, &entries, progressWindow);
@@ -51,17 +52,17 @@ bool FileReplacer::readFromFile(void *pClient, void *pCmd, const std::string & p
 	s32 handle = 0;
 	FSStat stats;
 	int ret = -1;
-	if(FSGetStat(pClient, pCmd, path.c_str(),&stats,FS_RET_ALL_ERROR) == FS_STATUS_OK){
+	if(FSGetStat((FSClient*)pClient, (FSCmdBlock*)pCmd, path.c_str(),&stats,FS_ERROR_FLAG_ALL) == FS_STATUS_OK){
 		char * file  = (char *) malloc((sizeof(char)*stats.size)+1);
 		if(!file){
 			log_print("Failed to allocate space for reading the file\n");
 			return false;
 		}
 		file[stats.size] = '\0';
-		if ((ret = FSOpenFile(pClient, pCmd, path.c_str(),"r", &handle, FS_RET_ALL_ERROR)) == FS_STATUS_OK){
+		if ((ret = FSOpenFile((FSClient*)pClient, (FSCmdBlock*)pCmd, path.c_str(),"r", (FSFileHandle*)&handle, FS_ERROR_FLAG_ALL)) == FS_STATUS_OK){
 			int total_read = 0;
 			int ret2 = 0;
-			while ((ret2 = FSReadFile(pClient,  pCmd, file+total_read, 1, stats.size-total_read, handle, 0, FS_RET_ALL_ERROR)) > 0){
+			while ((ret2 = FSReadFile((FSClient*)pClient, (FSCmdBlock*)pCmd, (uint8_t*)file+total_read, 1, stats.size-total_read, handle, 0, FS_ERROR_FLAG_ALL)) > 0){
 				log_print("Reading filelist.txt\n");
 				total_read += ret2;
 			}
@@ -113,7 +114,16 @@ int FileReplacer::read_dir(const std::string & path , Directory* dir, int * entr
 		bool isDir = dirent->d_type & DT_DIR;
 		const char *filename = dirent->d_name;
         if(*entries %25 == 0){
-            progressWindow.setTitle(strfmt("Creating filelist.txt: %d entries found", *entries));
+            char buffer[100];
+			snprintf(buffer,sizeof(buffer), "%d", *entries);
+
+			std::string progressMsg = tr("Creating filelist.txt:");
+			progressMsg += " ";
+			progressMsg += std::string(buffer);
+			progressMsg += " ";
+			progressMsg += tr("entries found");
+
+            progressWindow.setInfo(progressMsg.c_str());
         }
         if(isDir){
 

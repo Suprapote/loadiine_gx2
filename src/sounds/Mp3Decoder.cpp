@@ -29,7 +29,6 @@
 #include <unistd.h>
 #include <malloc.h>
 #include <math.h>
-#include "dynamic_libs/os_functions.h"
 #include "Mp3Decoder.hpp"
 
 Mp3Decoder::Mp3Decoder(const char * filepath)
@@ -68,7 +67,7 @@ Mp3Decoder::~Mp3Decoder()
 {
 	ExitRequested = true;
 	while(Decoding)
-		os_usleep(100);
+		usleep(100);
 
 	mad_synth_finish(&Synth);
 	mad_frame_finish(&Frame);

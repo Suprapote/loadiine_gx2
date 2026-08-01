@@ -26,15 +26,13 @@
 static const ValueString ValueGameSaveModes[] =
 {
     { GAME_SAVES_SHARED, trNOOP("Shared Mode") },
-    { GAME_SAVES_UNIQUE, trNOOP("Unique Mode") },
+    { GAME_SAVES_UNIQUE, trNOOP("Unique Mode") }
 };
 
 static const ValueString ValueLaunchMode[] =
 {
-    { LOADIINE_MODE_MII_MAKER, trNOOP("Mii Maker Mode") },
-    { LOADIINE_MODE_SMASH_BROS, trNOOP("Smash Bros Mode") },
-    { LOADIINE_MODE_KARAOKE, trNOOP("Karaoke Mode") },
-    { LOADIINE_MODE_ART_ATELIER, trNOOP("Art Atelier Mode") }
+    { LOADIINE_MODE_MII_MAKER, trNOOP("Load from SD") },
+    { LOADIINE_MODE_SMASH_BROS, trNOOP("Load from USB") }
 };
 
 class SettingsMenu : public GuiFrame, public sigslot::has_slots<>
@@ -75,6 +73,7 @@ private:
     GuiImageData *quitImageData;
     GuiImageData *categoryImageData;
     GuiImageData *categoryBgImageData;
+    GuiImageData *arrowImageData;
 
 
     GuiImage quitImage;
@@ -88,6 +87,7 @@ private:
         GuiImage *categoryIconGlow;
         GuiImage *categoryImages;
         GuiImage *categoryBgImage;
+        GuiImage *categoryArrowImage;
         GuiButton *categoryButton;
         std::vector<GuiText *> descriptions;
     } GuiSettingsCategory;
@@ -123,7 +123,6 @@ private:
     int targetPosition;
     int animationSpeed;
     bool bUpdatePositions;
-    bool moving;
 };
 
 #endif //_SETTINGS_WINDOW_H_

@@ -26,6 +26,7 @@
 #include <malloc.h>
 #include "utils/utils.h"
 #include "BufferCircle.hpp"
+#include "../common/types.h"
 
 BufferCircle::BufferCircle()
 {

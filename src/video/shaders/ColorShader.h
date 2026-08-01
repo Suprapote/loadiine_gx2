@@ -79,7 +79,7 @@ public:
         }
     }
 
-    void setAngle(const float & val)
+    void setAngle(const f32 & val)
     {
         VertexShader::setUniformReg(angleLocation, 4, &val);
     }

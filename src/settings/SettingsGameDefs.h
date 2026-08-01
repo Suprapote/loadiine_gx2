@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
+#include "../common/types.h"
+
 #ifndef __SETTINGSGAME_DEFS_
 #define __SETTINGSGAME_DEFS_
 typedef struct

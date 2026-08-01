@@ -1,6 +1,6 @@
 /*
  * FreeTypeGX is a wrapper class for libFreeType which renders a compiled
- * FreeType parsable font so a GX texture for Wii homebrew development.
+ * FreeType parsable font into a GX texture for Wii homebrew development.
  * Copyright (C) 2008 Armin Tamzarian
  * Modified by Dimok, 2015 for WiiU GX2
  *
@@ -23,7 +23,6 @@
 #include "FreeTypeGX.h"
 #include "video/CVideo.h"
 #include "video/shaders/Texture2DShader.h"
-#include "utils/logger.h"
 
 using namespace std;
 
@@ -34,9 +33,9 @@ using namespace std;
  */
 FreeTypeGX::FreeTypeGX(const uint8_t* fontBuffer, FT_Long bufferSize, bool lastFace)
 {
-	int32_t faceIndex = 0;
+	int faceIndex = 0;
 	ftPointSize = 0;
-    GX2InitSampler(&ftSampler, GX2_TEX_CLAMP_CLAMP_BORDER, GX2_TEX_XY_FILTER_BILINEAR);
+    GX2InitSampler(&ftSampler, GX2_TEX_CLAMP_MODE_CLAMP_BORDER, GX2_TEX_XY_FILTER_MODE_LINEAR);
 
 	FT_Init_FreeType(&ftLibrary);
 	if(lastFace)
@@ -78,7 +77,7 @@ wchar_t* FreeTypeGX::charToWideChar(const char* strChar)
 	wchar_t *strWChar = new (std::nothrow) wchar_t[strlen(strChar) + 1];
 	if (!strWChar) return NULL;
 
-	int32_t bt = mbstowcs(strWChar, strChar, strlen(strChar));
+	int bt = mbstowcs(strWChar, strChar, strlen(strChar));
 	if (bt > 0)
 	{
 		strWChar[bt] = 0;
@@ -163,8 +162,8 @@ void FreeTypeGX::unloadFont()
         {
             if(itr2->second.texture)
             {
-                if(itr2->second.texture->surface.image_data)
-                    free(itr2->second.texture->surface.image_data);
+                if(itr2->second.texture->surface.image)
+                    free(itr2->second.texture->surface.image);
 
                 delete itr2->second.texture;
                 itr2->second.texture = NULL;
@@ -235,7 +234,7 @@ ftgxCharData * FreeTypeGX::cacheGlyphData(wchar_t charCode, int16_t pixelSize)
 
             //! Initialize texture
             charData->texture = new GX2Texture;
-            GX2InitTexture(charData->texture, textureWidth,  textureHeight, 1, 0, GX2_SURFACE_FORMAT_TC_R5_G5_B5_A1_UNORM, GX2_SURFACE_DIM_2D, GX2_TILE_MODE_LINEAR_ALIGNED);
+            GX2InitTexture(charData->texture, textureWidth,  textureHeight, 1, 0, GX2_SURFACE_FORMAT_UNORM_R5_G5_B5_A1, GX2_SURFACE_DIM_TEXTURE_2D, GX2_TILE_MODE_LINEAR_ALIGNED);
 
 			loadGlyphData(glyphBitmap, charData);
 
@@ -277,14 +276,14 @@ uint16_t FreeTypeGX::cacheGlyphDataComplete(int16_t pixelSize)
 
 void FreeTypeGX::loadGlyphData(FT_Bitmap *bmp, ftgxCharData *charData)
 {
-	charData->texture->surface.image_data = (uint8_t *) memalign(charData->texture->surface.align, charData->texture->surface.image_size);
-	if(!charData->texture->surface.image_data)
+	charData->texture->surface.image = (uint8_t *) memalign(charData->texture->surface.alignment, charData->texture->surface.imageSize);
+	if(!charData->texture->surface.image)
         return;
 
-	memset(charData->texture->surface.image_data, 0x00, charData->texture->surface.image_size);
+	memset(charData->texture->surface.image, 0x00, charData->texture->surface.imageSize);
 
 	uint8_t *src = (uint8_t *)bmp->buffer;
-	uint16_t *dst = (uint16_t *)charData->texture->surface.image_data;
+	uint16_t *dst = (uint16_t *)charData->texture->surface.image;
 	int32_t x, y;
 
 	for(y = 0; y < bmp->rows; y++)
@@ -295,7 +294,7 @@ void FreeTypeGX::loadGlyphData(FT_Bitmap *bmp, ftgxCharData *charData)
             dst[y * charData->texture->surface.pitch + x] = intensity ? ((intensity << 11) | (intensity << 6) | (intensity << 1) | 1) : 0;
 		}
 	}
-    GX2Invalidate(GX2_INVALIDATE_CPU_TEXTURE, charData->texture->surface.image_data, charData->texture->surface.image_size);
+    GX2Invalidate(GX2_INVALIDATE_MODE_CPU_TEXTURE, charData->texture->surface.image, charData->texture->surface.imageSize);
 }
 
 /**
@@ -370,7 +369,7 @@ int16_t FreeTypeGX::getStyleOffsetHeight(int16_t format, uint16_t pixelSize)
  * @return The number of characters printed.
  */
 
-uint16_t FreeTypeGX::drawText(CVideo *video, int16_t x, int16_t y, int16_t z, const wchar_t *text, int16_t pixelSize, const glm::vec4 & color, uint16_t textStyle, uint16_t textWidth, const float &textBlur, const float & colorBlurIntensity, const glm::vec4 & blurColor, const float & internalRenderingScale)
+uint16_t FreeTypeGX::drawText(CVideo *video, int16_t x, int16_t y, int16_t z, const wchar_t *text, int16_t pixelSize, const glm::vec4 & color, uint16_t textStyle, uint16_t textWidth, const float &textBlur, const float &colorBlurIntensity, const glm::vec4 & blurColor)
 {
 	if (!text)
         return 0;
@@ -389,7 +388,8 @@ uint16_t FreeTypeGX::drawText(CVideo *video, int16_t x, int16_t y, int16_t z, co
 		y_offset = getStyleOffsetHeight(textStyle, pixelSize);
 	}
 
-	int32_t i = 0;
+	int i = 0;
+
 	while (text[i])
 	{
 		ftgxCharData* glyphData = cacheGlyphData(text[i], pixelSize);
@@ -400,9 +400,9 @@ uint16_t FreeTypeGX::drawText(CVideo *video, int16_t x, int16_t y, int16_t z, co
 			{
 				FT_Get_Kerning(ftFace, fontData[pixelSize].ftgxCharMap[text[i - 1]].glyphIndex, glyphData->glyphIndex, FT_KERNING_DEFAULT, &pairDelta);
 				x_pos += (pairDelta.x >> 6);
-
 			}
-			copyTextureToFramebuffer(video, glyphData->texture,x_pos + glyphData->renderOffsetX + x_offset, y + glyphData->renderOffsetY - y_offset, z, color, textBlur, colorBlurIntensity, blurColor,internalRenderingScale);
+
+			copyTextureToFramebuffer(video, glyphData->texture, x_pos + glyphData->renderOffsetX + x_offset, y + glyphData->renderOffsetY - y_offset, z, color, textBlur, colorBlurIntensity, blurColor);
 
 			x_pos += glyphData->glyphAdvanceX;
 			++printed;
@@ -429,8 +429,8 @@ uint16_t FreeTypeGX::getWidth(const wchar_t *text, int16_t pixelSize)
 
 	uint16_t strWidth = 0;
 	FT_Vector pairDelta;
-	int32_t i = 0;
 
+	int i = 0;
 	while (text[i])
 	{
 		ftgxCharData* glyphData = cacheGlyphData(text[i], pixelSize);
@@ -505,7 +505,7 @@ void FreeTypeGX::getOffset(const wchar_t *text, int16_t pixelSize, uint16_t widt
 	int16_t strMax = 0, strMin = 9999;
 	uint16_t currWidth = 0;
 
-	int32_t i = 0;
+	int i = 0;
 
 	while (text[i])
 	{
@@ -547,13 +547,13 @@ void FreeTypeGX::getOffset(const wchar_t *text, int16_t pixelSize, uint16_t widt
  * @param screenY   The screen Y coordinate at which to output the rendered texture.
  * @param color Color to apply to the texture.
  */
-void FreeTypeGX::copyTextureToFramebuffer(CVideo *pVideo, GX2Texture *texture, int16_t x, int16_t y, int16_t z, const glm::vec4 & color, const float & defaultBlur, const float & blurIntensity, const glm::vec4 & blurColor, const float & internalRenderingScale)
+void FreeTypeGX::copyTextureToFramebuffer(CVideo *pVideo, GX2Texture *texture, int16_t x, int16_t y, int16_t z, const glm::vec4 & color, const float & defaultBlur, const float & blurIntensity, const glm::vec4 & blurColor)
 {
     static const f32 imageAngle = 0.0f;
-    static const f32 blurScale = (2.0f/ (internalRenderingScale));
+    static const f32 blurScale = 2.0f;
 
-    f32 offsetLeft = blurScale * ((f32)x + 0.5f * (f32)texture->surface.width) * (f32)pVideo->getWidthScaleFactor();
-    f32 offsetTop = blurScale * ((f32)y -  0.5f * (f32)texture->surface.height) * (f32)pVideo->getHeightScaleFactor();
+    f32 offsetLeft = 2.0f * ((f32)x + 0.5f * (f32)texture->surface.width) * (f32)pVideo->getWidthScaleFactor();
+    f32 offsetTop = 2.0f * ((f32)y - 0.5f * (f32)texture->surface.height) * (f32)pVideo->getHeightScaleFactor();
 
     f32 widthScale = blurScale * (f32)texture->surface.width * pVideo->getWidthScaleFactor();
     f32 heightScale = blurScale * (f32)texture->surface.height * pVideo->getHeightScaleFactor();

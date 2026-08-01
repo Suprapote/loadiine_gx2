@@ -1,14 +1,13 @@
 #include <stdio.h>
-#include "dynamic_libs/os_functions.h"
-#include "utils/logger.h"
+#include "common/types.h"
 #include "exception_handler.h"
-
-#define OS_EXCEPTION_MODE_GLOBAL_ALL_CORES      4
 
 #define OS_EXCEPTION_DSI                        2
 #define OS_EXCEPTION_ISI                        3
 #define OS_EXCEPTION_PROGRAM                    6
 
+#include <coreinit/exception.h>
+#include <coreinit/debug.h>
 
 #define CPU_STACK_TRACE_DEPTH		10
 #define __stringify(rn)				#rn
@@ -52,11 +51,9 @@ static const char exception_print_formats[18][45] = {
       "%p:  %08X %08X %08X %08X\n",                         // 17
 };
 
-static unsigned char exception_cb(void * c, unsigned char exception_type) {
+static unsigned char exception_cb(OSContext * context, unsigned char exception_type) {
     char buf[850];
     int pos = 0;
-
-    OSContext *context = (OSContext *) c;
     /*
      * This part is mostly from libogc. Thanks to the devs over there.
      */
@@ -72,7 +69,7 @@ static unsigned char exception_cb(void * c, unsigned char exception_type) {
 	pos += sprintf(buf + pos, exception_print_formats[9], context->lr, context->srr0, context->srr1);
 
 	//if(exception_type == OS_EXCEPTION_DSI) {
-        pos += sprintf(buf + pos, exception_print_formats[10], context->ex1, context->ex0); // this freezes
+        pos += sprintf(buf + pos, exception_print_formats[10], context->dar, context->dsisr); // this freezes
 	//}
 
     void *pc = (void*)context->srr0;
@@ -121,23 +118,23 @@ static unsigned char exception_cb(void * c, unsigned char exception_type) {
 		for (i = 0; i < 8; i += 4)
             pos += sprintf(buf + pos, exception_print_formats[17], &(pAdd[i]),pAdd[i], pAdd[i+1], pAdd[i+2], pAdd[i+3]);
 	//}
-    log_print(buf);
+
     OSFatal(buf);
     return 1;
 }
 
-static unsigned char dsi_exception_cb(OSContext * context) {
+static unsigned char dsi_exception_cb(void * context) {
     return exception_cb(context, 0);
 }
-static unsigned char isi_exception_cb(OSContext * context) {
+static unsigned char isi_exception_cb(void * context) {
     return exception_cb(context, 1);
 }
-static unsigned char program_exception_cb(OSContext * context) {
+static unsigned char program_exception_cb(void * context) {
     return exception_cb(context, 2);
 }
 
 void setup_os_exceptions(void) {
-    OSSetExceptionCallback(OS_EXCEPTION_DSI, &dsi_exception_cb);
-    OSSetExceptionCallback(OS_EXCEPTION_ISI, &isi_exception_cb);
-    OSSetExceptionCallback(OS_EXCEPTION_PROGRAM, &program_exception_cb);
+    OSSetExceptionCallback(OS_EXCEPTION_DSI, (OSExceptionCallbackFn)dsi_exception_cb);
+    OSSetExceptionCallback(OS_EXCEPTION_ISI, (OSExceptionCallbackFn)isi_exception_cb);
+    OSSetExceptionCallback(OS_EXCEPTION_PROGRAM, (OSExceptionCallbackFn)program_exception_cb);
 }

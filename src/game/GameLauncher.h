@@ -3,11 +3,9 @@
 
 #include <vector>
 #include <string>
-#include <gctypes.h>
+#include <wut_types.h>
 #include "common/common.h"
 #include "menu/ProgressWindow.h"
-#include "rpx_rpl_table.h"
-#include "memory_area_table.h"
 #include "GameList.h"
 #include "system/CThread.h"
 #include "gui/sigslot.h"

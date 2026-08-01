@@ -1,23 +1,24 @@
 #include <stdio.h>
 #include <string.h>
 #include "strings.h"
-#include "common/kernel_defs.h"
-#include "dynamic_libs/fs_functions.h"
-#include "dynamic_libs/os_functions.h"
 #include "fs/fs_utils.h"
 #include "utils.h"
 #include "logger.h"
+#include "../common/kernel_defs.h"
+#include <coreinit/filesystem.h>
 
+#define FS_MAX_MOUNTPATH_SIZE   128
 #define XML_BUFFER_SIZE         8192
 
 char * XML_GetNodeText(const char *xml_part, const char * nodename, char * output, int output_size)
 {
+    
     // create '<' + nodename
     char buffer[strlen(nodename) + 3];
     buffer[0] = '<';
     strlcpy(&buffer[1], nodename, sizeof(buffer));
 
-    const char *start = strcasestr(xml_part, buffer);
+    const char *start = m_strcasestr(xml_part, buffer);
     if(!start)
         return 0;
 
@@ -34,7 +35,7 @@ char * XML_GetNodeText(const char *xml_part, const char * nodename, char * outpu
     strlcpy(&buffer[2], nodename, sizeof(buffer));
 
     // search for end of string
-    const char *end = strcasestr(start, buffer);
+    const char *end = m_strcasestr(start, buffer);
     if(!end)
         return 0;
 
@@ -57,7 +58,7 @@ int LoadXmlParameters(ReducedCosAppXmlInfo * xmlInfo, const char *rpx_name, cons
     memset(xmlInfo, 0, sizeof(ReducedCosAppXmlInfo));
     xmlInfo->version_cos_xml = 18;             // default for most games
     xmlInfo->os_version = 0x000500101000400A;  // default for most games
-    xmlInfo->title_id = OSGetTitleID();        // use mii maker ID
+    xmlInfo->title_id = 0;        // use mii maker ID
     xmlInfo->app_type = 0x80000000;            // default for most games
     xmlInfo->cmdFlags = 0;                     // default for most games
     strlcpy(xmlInfo->rpx_name, rpx_name, sizeof(xmlInfo->rpx_name));
@@ -97,12 +98,12 @@ int LoadXmlParameters(ReducedCosAppXmlInfo * xmlInfo, const char *rpx_name, cons
 
         if(XML_GetNodeText(xmlData, "version", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 10);
+            u32 value = m_strtoll(xmlNodeData, 0, 10);
             xmlInfo->version_cos_xml = value;
         }
         if(XML_GetNodeText(xmlData, "cmdFlags", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 10);
+            u32 value = m_strtoll(xmlNodeData, 0, 10);
             xmlInfo->cmdFlags = value;
         }
         if(XML_GetNodeText(xmlData, "argstr", xmlNodeData, XML_BUFFER_SIZE))
@@ -115,77 +116,77 @@ int LoadXmlParameters(ReducedCosAppXmlInfo * xmlInfo, const char *rpx_name, cons
         }
         if(XML_GetNodeText(xmlData, "avail_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->avail_size = value;
         }
         if(XML_GetNodeText(xmlData, "codegen_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->codegen_size = value;
         }
         if(XML_GetNodeText(xmlData, "codegen_core", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->codegen_core = value;
         }
         if(XML_GetNodeText(xmlData, "max_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->max_size = value;
         }
         if(XML_GetNodeText(xmlData, "max_codesize", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->max_codesize = value;
         }
         if(XML_GetNodeText(xmlData, "overlay_arena", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->overlay_arena = value;
         }
         if(XML_GetNodeText(xmlData, "default_stack0_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->default_stack0_size = value;
         }
         if(XML_GetNodeText(xmlData, "default_stack1_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->default_stack1_size = value;
         }
         if(XML_GetNodeText(xmlData, "default_stack2_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->default_stack2_size = value;
         }
         if(XML_GetNodeText(xmlData, "default_redzone0_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->default_redzone0_size = value;
         }
         if(XML_GetNodeText(xmlData, "default_redzone1_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->default_redzone1_size = value;
         }
         if(XML_GetNodeText(xmlData, "default_redzone2_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->default_redzone2_size = value;
         }
         if(XML_GetNodeText(xmlData, "exception_stack0_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->exception_stack0_size = value;
         }
         if(XML_GetNodeText(xmlData, "exception_stack1_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->exception_stack0_size = value;
         }
         if(XML_GetNodeText(xmlData, "exception_stack2_size", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->exception_stack0_size = value;
         }
     }
@@ -206,28 +207,28 @@ int LoadXmlParameters(ReducedCosAppXmlInfo * xmlInfo, const char *rpx_name, cons
         //--------------------------------------------------------------------------------------------
         if(XML_GetNodeText(xmlData, "os_version", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint64_t value = m_strtoll(xmlNodeData, 0, 16);
+            u64 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->os_version = value;
         }
         if(XML_GetNodeText(xmlData, "title_id", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint64_t value = m_strtoll(xmlNodeData, 0, 16);
+            u64 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->title_id = value;
 
         }
         if(XML_GetNodeText(xmlData, "title_version", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->title_version = value;
         }
         if(XML_GetNodeText(xmlData, "sdk_version", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 10);
+            u32 value = m_strtoll(xmlNodeData, 0, 10);
             xmlInfo->sdk_version = value;
         }
         if(XML_GetNodeText(xmlData, "app_type", xmlNodeData, XML_BUFFER_SIZE))
         {
-            uint32_t value = m_strtoll(xmlNodeData, 0, 16);
+            u32 value = m_strtoll(xmlNodeData, 0, 16);
             xmlInfo->app_type = value;
         }
         //--------------------------------------------------------------------------------------------
@@ -281,5 +282,5 @@ int GetId6FromMeta(const char *path, char *id6)
     if(strlen(id6) == 6)
         return 0;
     else
-        return -2;
+        return 0;
 }

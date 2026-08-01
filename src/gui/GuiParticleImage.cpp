@@ -17,6 +17,7 @@
 #include "GuiParticleImage.h"
 #include "video/CVideo.h"
 #include "video/shaders/ColorShader.h"
+#include "utils/utils.h"
 
 #define CIRCLE_VERTEX_COUNT     36
 
@@ -51,8 +52,8 @@ GuiParticleImage::GuiParticleImage(s32 w, s32 h, u32 particleCount)
         colorVertexs[i * 4 + 2] = 0xff;
         colorVertexs[i * 4 + 3] = 0xff;
     }
-    GX2Invalidate(GX2_INVALIDATE_CPU_ATTRIB_BUFFER, posVertexs, ColorShader::cuVertexAttrSize * CIRCLE_VERTEX_COUNT);
-    GX2Invalidate(GX2_INVALIDATE_CPU_ATTRIB_BUFFER, colorVertexs, ColorShader::cuColorAttrSize * CIRCLE_VERTEX_COUNT);
+    GX2Invalidate(GX2_INVALIDATE_MODE_ATTRIBUTE_BUFFER, posVertexs, ColorShader::cuVertexAttrSize * CIRCLE_VERTEX_COUNT);
+    GX2Invalidate(GX2_INVALIDATE_MODE_ATTRIBUTE_BUFFER, colorVertexs, ColorShader::cuColorAttrSize * CIRCLE_VERTEX_COUNT);
 
     particles.resize(particleCount);
 
@@ -123,6 +124,6 @@ void GuiParticleImage::draw(CVideo *pVideo)
         ColorShader::instance()->setOffset(positionOffsets);
         ColorShader::instance()->setScale(scaleFactor);
         ColorShader::instance()->setColorIntensity(colorIntensity * particles[i].colors);
-        ColorShader::instance()->draw(GX2_PRIMITIVE_TRIANGLE_FAN, CIRCLE_VERTEX_COUNT);
+        ColorShader::instance()->draw(GX2_PRIMITIVE_MODE_TRIANGLE_FAN, CIRCLE_VERTEX_COUNT);
     }
 }

@@ -5,13 +5,12 @@
 extern "C" {
 #endif
 
-#define LOADIINE_VERSION        "v0.3"
-#define IS_USING_MII_MAKER      1
+#define LOADIINE_VERSION        "v2 - Aroma"
 
 /* Loadiine common paths */
-#define CAFE_OS_SD_PATH         "/vol/external01"
-#define SD_PATH                 "sd:"
-#define USB_PATH                "usb:"
+#define CAFE_OS_SD_PATH         "fs:/vol/external01"
+#define SD_PATH                 "fs:/vol/external01"
+#define USB_PATH                "storage_usb:"
 #define WIIU_PATH               "/wiiu"
 #define GAMES_PATH              "/games"
 #define SAVES_PATH              "/saves"
@@ -55,9 +54,6 @@ extern "C" {
 #define STATIC_FUNCTION         0
 #define DYNAMIC_FUNCTION        1
 
-// none dynamic libs
-#define LIB_LOADER              0x1001
-
 /* Loadiine Modes */
 #define LOADIINE_MODE_MII_MAKER     0
 #define LOADIINE_MODE_SMASH_BROS    1
@@ -65,30 +61,19 @@ extern "C" {
 #define LOADIINE_MODE_ART_ATELIER   3
 #define LOADIINE_MODE_DEFAULT	    255
 
-/* homebrew launcher return codes */
-#ifndef EXIT_SUCCESS
-#define EXIT_SUCCESS                0
-#endif
-#define EXIT_RELAUNCH_ON_LOAD       0xFFFFFFFD
-
 /* RPX Address : where the rpx is copied or retrieve, depends if we dump or replace */
 /* Note : from phys 0x30789C5D to 0x31E20000, memory seems empty (space reserved for root.rpx) which let us approximatly 22.5mB of memory free to put the rpx and additional rpls */
 #ifndef MEM_BASE
 #define MEM_BASE                (0x00800000)
 #endif
 
-#define ELF_DATA_ADDR           (*(volatile unsigned int*)(MEM_BASE + 0x1300 + 0x00))
-#define ELF_DATA_SIZE           (*(volatile unsigned int*)(MEM_BASE + 0x1300 + 0x04))
-#define MAIN_ENTRY_ADDR         (*(volatile unsigned int*)(MEM_BASE + 0x1400 + 0x00))
-#define OS_FIRMWARE             (*(volatile unsigned int*)(MEM_BASE + 0x1400 + 0x04))
+
 #define PREP_TITLE_CALLBACK     (*(volatile unsigned int*)(MEM_BASE + 0x1400 + 0x08))
 #define SERVER_IP               (*(volatile unsigned int*)(MEM_BASE + 0x1400 + 0x0C))
 #define RPX_CHECK_NAME          (*(volatile unsigned int*)(MEM_BASE + 0x1400 + 0x10))
 #define GAME_RPX_LOADED         (*(volatile unsigned int*)(MEM_BASE + 0x1400 + 0x14))
 #define GAME_LAUNCHED           (*(volatile unsigned int*)(MEM_BASE + 0x1400 + 0x18))
 #define LOADIINE_MODE           (*(volatile unsigned int*)(MEM_BASE + 0x1400 + 0x1C))      // loadiine operation mode (1 = smash bros, 0 = mii maker)
-
-#define OS_SPECIFICS            ((OsSpecifics*)(MEM_BASE + 0x1500))
 
 typedef struct _game_paths_t
 {

@@ -20,53 +20,70 @@
 #include "menu/MainWindow.h"
 #include "video/CVideo.h"
 #include "system/CThread.h"
+#include "utils/utils.h"
+#include "menu/MainWindow.h"
+#include "menu/MainStartUp.h"
 
 class Application : public CThread
 {
 public:
     static Application * instance() {
-        if(!applicationInstance)
-            applicationInstance = new Application();
-        return applicationInstance;
-    }
-    static void destroyInstance() {
-        if(applicationInstance) {
-            delete applicationInstance;
-            applicationInstance = NULL;
-        }
-    }
+		if(!applicationInstance)
+			applicationInstance = new Application();
+		return applicationInstance;
+	}
+	static void destroyInstance() {
+		if(applicationInstance) {
+			delete applicationInstance;
+			applicationInstance = NULL;
+		}
+	}
 
     CVideo *getVideo(void) const {
-        return video;
-    }
-    MainWindow *getMainWindow(void) const {
-        return mainWindow;
-    }
-
-    GuiSound *getBgMusic(void) const {
-        return bgMusic;
-    }
+		return video;
+	}
+	MainWindow *getMainWindow(void) const {
+		return mainWindow;
+	}
+	GuiSound *getBgMusic(void) const {
+		return bgMusic;
+	}
 
     void exec(void);
-    void fadeOut(void);
-
-    void quit(void) {
-        exitApplication = true;
-    }
+	void fadeOut(void);
+	
+    void quit(void);
+	
+	void exitDisable() {
+		exitDisabled = true;
+	}
+	
+	void exitEnable() {
+		exitDisabled = false;
+	}
 
 private:
     Application();
     virtual ~Application();
 
+	static u32 hbmDeniedCallback(void *context);
+
+	bool procUI(void);
+
     static Application *applicationInstance;
-    static bool exitApplication;
+	static bool exitApplication;
+    static bool quitRequest;
 
     void executeThread(void);
 
     GuiSound *bgMusic;
-    CVideo *video;
-    MainWindow *mainWindow;
-    GuiController *controller[5];
+	CVideo *video;
+	MainWindow *mainWindow;
+	MainStartUp *mainStartUp;
+    FreeTypeGX *fontSystem;
+	GuiController *controller[5];
+
+	bool exitDisabled;
 };
 
 #endif //_APPLICATION_H

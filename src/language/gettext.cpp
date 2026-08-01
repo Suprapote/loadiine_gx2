@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <gctypes.h>
+#include <wut_types.h>
 #include <string>
 #include <vector>
 #include "gettext.h"

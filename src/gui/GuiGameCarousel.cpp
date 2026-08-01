@@ -467,19 +467,19 @@ void GuiGameCarousel::updateDrawMap(void)
     const int carousel_x = 0;
     const int carousel_y = -RADIUS + 80;
 
-    std::multimap<float, int> drawMap;
-    std::multimap<float, int>::iterator itr;
+    std::multimap<f32, int> drawMap;
+    std::multimap<f32, int>::iterator itr;
 
     for(int i = 0; i < pagesize; i++)
     {
-        float setDegree = (currDegree - DEG_OFFSET * i);
-        float rotationAngle = 90.0f - setDegree;
-        float posX = (RADIUS * cosf(DegToRad(setDegree)) + 0.5f);
-        float posY = (RADIUS * sinf(DegToRad(setDegree)) + 0.5f);
+        f32 setDegree = (currDegree - DEG_OFFSET * i);
+        f32 rotationAngle = 90.0f - setDegree;
+        f32 posX = (RADIUS * cosf(DegToRad(setDegree)) + 0.5f);
+        f32 posY = (RADIUS * sinf(DegToRad(setDegree)) + 0.5f);
         game[i]->setPosition(carousel_x + posX, carousel_y + posY);
         game[i]->setAngle(rotationAngle);
 
-        drawMap.insert(std::pair<float, int>(posY, i));
+        drawMap.insert(std::pair<f32, int>(posY, i));
     }
 
     int n = 0;

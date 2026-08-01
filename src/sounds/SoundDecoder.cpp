@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-#include <gctypes.h>
+#include <wut_types.h>
 #include <malloc.h>
 #include <string.h>
 #include <unistd.h>
-#include "dynamic_libs/os_functions.h"
+#include <coreinit/cache.h>
 #include "SoundDecoder.hpp"
 
 static const u32 FixedPointShift = 15;
@@ -46,7 +46,7 @@ SoundDecoder::~SoundDecoder()
 {
 	ExitRequested = true;
 	while(Decoding)
-		os_usleep(1000);
+		usleep(1000);
 
 	//! lock unlock once to make sure it's really not decoding
 	Lock();

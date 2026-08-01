@@ -19,9 +19,10 @@
 
 #include <string>
 #include <stdio.h>
-#include <gctypes.h>
+#include <wut_types.h>
 #include <vector>
 #include "SettingsEnums.h"
+#include "../common/gx2_ext.h"
 
 class CSettings
 {
@@ -80,6 +81,7 @@ public:
         BgMusicPath,
         GameCover3DPath,
         ConsoleRegionCode,
+        LanguagesPath,
 		AppLanguage,
         GameStartIndex,
 		PadconMode,

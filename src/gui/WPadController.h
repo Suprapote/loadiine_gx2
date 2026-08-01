@@ -18,13 +18,12 @@
 #define WPAD_CONTROLLER_H_
 
 #include "GuiController.h"
-#include "dynamic_libs/padscore_functions.h"
 
 class WPadController : public GuiController
 {
 public:
     //!Constructor
-    WPadController(s32 channel)
+    WPadController(int channel)
         : GuiController(channel)
     {
         memset(&kpadData, 0, sizeof(kpadData));
@@ -33,7 +32,7 @@ public:
     //!Destructor
     virtual ~WPadController()  {}
 
-    u32 remapWiiMoteButtons(u32 buttons)
+    uint32_t remapWiiMoteButtons(u32 buttons)
     {
         u32 conv_buttons = 0;
 
@@ -80,7 +79,7 @@ public:
     }
     u32 remapClassicButtons(u32 buttons)
     {
-        u32 conv_buttons = 0;
+        uint32_t conv_buttons = 0;
 
         if(buttons & WPAD_CLASSIC_BUTTON_LEFT)
             conv_buttons |= GuiTrigger::BUTTON_LEFT;
@@ -130,50 +129,50 @@ public:
         return conv_buttons;
     }
 
-    bool update(s32 width, s32 height)
+    bool update(int width, int height)
     {
         lastData = data;
 
-        u32 controller_type;
+        WPADExtensionType controller_type;
 
         //! check if the controller is connected
-        if(WPADProbe(chanIdx-1, &controller_type) != 0)
+        if(WPADProbe(wpadChanIdx, &controller_type) != 0)
             return false;
 
-        KPADRead(chanIdx-1, &kpadData, 1);
+        KPADRead(wpadChanIdx, &kpadData, 1);
 
-        if(kpadData.device_type <= 1)
+        if(kpadData.extensionType <= 1)
         {
-            data.buttons_r = remapWiiMoteButtons(kpadData.btns_r);
-            data.buttons_h = remapWiiMoteButtons(kpadData.btns_h);
-            data.buttons_d = remapWiiMoteButtons(kpadData.btns_d);
+            data.buttons_r = remapWiiMoteButtons(kpadData.release);
+            data.buttons_h = remapWiiMoteButtons(kpadData.hold);
+            data.buttons_d = remapWiiMoteButtons(kpadData.trigger);
         }
         else
         {
-            data.buttons_r = remapClassicButtons(kpadData.classic.btns_r);
-            data.buttons_h = remapClassicButtons(kpadData.classic.btns_h);
-            data.buttons_d = remapClassicButtons(kpadData.classic.btns_d);
+            data.buttons_r = remapClassicButtons(kpadData.classic.release);
+            data.buttons_h = remapClassicButtons(kpadData.classic.hold);
+            data.buttons_d = remapClassicButtons(kpadData.classic.trigger);
         }
 
-        data.validPointer = (kpadData.pos_valid == 1 || kpadData.pos_valid == 2) && (kpadData.pos_x >= -1.0f && kpadData.pos_x <= 1.0f) && (kpadData.pos_y >= -1.0f && kpadData.pos_y <= 1.0f);
+        data.validPointer = (kpadData.pos.y == 1 || kpadData.pos.y == 2) && (kpadData.pos.x >= -1.0f && kpadData.pos.x <= 1.0f) && (kpadData.pos.y >= -1.0f && kpadData.pos.y <= 1.0f);
         //! calculate the screen offsets if pointer is valid else leave old value
         if(data.validPointer)
         {
-            data.x = (width >> 1) * kpadData.pos_x;
-            data.y = (height >> 1) * (-kpadData.pos_y);
+            data.x = (width >> 1) * kpadData.pos.x;
+            data.y = (height >> 1) * (-kpadData.pos.y);
 
-            if(kpadData.angle_y > 0.0f)
-                data.pointerAngle = (-kpadData.angle_x + 1.0f) * 0.5f * 180.0f;
+            if(kpadData.angle.y > 0.0f)
+                data.pointerAngle = (-kpadData.angle.x + 1.0f) * 0.5f * 180.0f;
             else
-                data.pointerAngle = (kpadData.angle_x + 1.0f) * 0.5f * 180.0f - 180.0f;
+                data.pointerAngle = (kpadData.angle.x + 1.0f) * 0.5f * 180.0f - 180.0f;
         }
 
         return true;
     }
 
 private:
-    KPADData kpadData;
-    u32 lastButtons;
+    KPADStatus kpadData;
+    uint32_t lastButtons;
 };
 
 #endif

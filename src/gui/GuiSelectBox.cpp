@@ -94,7 +94,7 @@ void GuiSelectBox::SelectValue(u32 value){
         const wchar_t* w_text = valueButtons[value].valueButtonText->getText();
         std::wstring ws(w_text);
         std::string text(ws.begin(), ws.end());
-        topValueText.setText(text.c_str());
+        topValueText.setText(getCaptionWithValue(text).c_str());
 
         std::string real_value = buttonToValue[valueButtons[value].valueButton];
         if(real_value.compare(std::string()) == 0) real_value = "<error>";
@@ -102,6 +102,12 @@ void GuiSelectBox::SelectValue(u32 value){
         valueChanged(this,real_value);
         ShowHideValues(false);
     }
+}
+std::string GuiSelectBox::getCaptionWithValue(std::string value){
+    u32 pad = (38 - captionText.size() -2);
+    if(pad > value.size())
+    	value.insert(0, pad - value.size(), ' ');
+    return strfmt("%s: %s",captionText.c_str(),value.c_str());
 }
 
 void GuiSelectBox::OnTopValueClicked(GuiButton *button, const GuiController *controller, GuiTrigger *trigger)
@@ -145,7 +151,7 @@ void GuiSelectBox::OnDPADClick(GuiButton *button, const GuiController *controlle
     }
 }
 
-void GuiSelectBox::Init(std::map<std::string,std::string> values, s32 valueID)
+void GuiSelectBox::Init(std::map<std::string,std::string> values, int valueID)
 {
     if((u32)valueID >= values.size()){
         valueID = 0;
@@ -158,12 +164,12 @@ void GuiSelectBox::Init(std::map<std::string,std::string> values, s32 valueID)
 
     valueButtons.resize(values.size());
 
-    s32 i = 0;
+    int i = 0;
     f32 imgScale = 1.0f;
     std::map<std::string, std::string>::iterator itr;
     for(itr = values.begin(); itr != values.end(); itr++) {
         if(i == valueID){
-            topValueText.setText(itr->first.c_str());
+            topValueText.setText(getCaptionWithValue(itr->first).c_str());
         }
 
         valueButtons[i].valueButtonImg = new GuiImage(valueImageData);
@@ -190,13 +196,12 @@ void GuiSelectBox::Init(std::map<std::string,std::string> values, s32 valueID)
         //valueButtons[i].valueButton->setState(STATE_HIDDEN); //Wont get disabled soon enough
 
         buttonToValue[valueButtons[i].valueButton] = itr->second;
-        s32 ypos = (((valueButtons[i].valueButtonImg->getHeight()*getScale()) * (i))+ (topValueImage.getHeight()-5)*getScale())*-1.0f;
-        valueButtons[i].valueButton->setPosition(0, ypos);
+
+        valueButtons[i].valueButton->setPosition(0, (((valueButtons[i].valueButtonImg->getHeight()*getScale()) * (i))+ (topValueImage.getHeight()-5)*getScale())*-1.0f);
         valuesFrame.append(valueButtons[i].valueButton);
 
         i++;
     }
-
     //Collapse the thing!
     showValues = false;
     bChanged = true;
@@ -235,7 +240,7 @@ GuiSelectBox::~GuiSelectBox()
 }
 
 
-void GuiSelectBox::setState(s32 s, s32 c)
+void GuiSelectBox::setState(int s, int c)
 {
 	GuiElement::setState(s, c);
 }
@@ -252,15 +257,6 @@ f32 GuiSelectBox::getTopValueHeight() {
 f32 GuiSelectBox::getTopValueWidth() {
     return topValueImage.getWidth();
 }
-
-f32 GuiSelectBox::getHeight(){
-    return getTopValueHeight();
-}
-
-f32 GuiSelectBox::getWidth(){
-    return getTopValueWidth();
-}
-
 
 void GuiSelectBox::OnValueOpenEffectFinish(GuiElement *element)
 {

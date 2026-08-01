@@ -56,7 +56,7 @@ public:
     };
 
 private:
-    float windowScale = 0.75f;
+    f32 windowScale = 0.75f;
     bool gamesettingsChanged = false;
     void setHeader(const discHeader *);
     void OnDPADClick(GuiButton *button, const GuiController *controller, GuiTrigger *trigger);

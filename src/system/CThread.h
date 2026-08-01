@@ -17,11 +17,10 @@
 #ifndef CTHREAD_H_
 #define CTHREAD_H_
 
-#include <gctypes.h>
 #include <malloc.h>
 #include <unistd.h>
-#include "dynamic_libs/os_functions.h"
-#include "utils/logger.h"
+#include <coreinit/thread.h>
+#include "common/types.h"
 
 class CThread
 {
@@ -29,7 +28,7 @@ public:
 	typedef void (* Callback)(CThread *thread, void *arg);
 
 	//! constructor
-	CThread(s32 iAttr, s32 iPriority = 16, s32 iStackSize = 0x8000, CThread::Callback callback = NULL, void *callbackArg = NULL)
+	CThread(int iAttr, int iPriority = 16, int iStackSize = 0x8000, CThread::Callback callback = NULL, void *callbackArg = NULL)
 		: pThread(NULL)
 		, pThreadStack(NULL)
 		, pCallback(callback)
@@ -38,18 +37,18 @@ public:
 	    //! save attribute assignment
 	    iAttributes = iAttr;
 		//! allocate the thread
-		pThread = (OSThread*) memalign(8, 0x1000);
+		pThread = (OSThread*)memalign(8, sizeof(OSThread));
 		//! allocate the stack
 		pThreadStack = (u8 *) memalign(0x20, iStackSize);
         //! create the thread
 		if(pThread && pThreadStack)
-            OSCreateThread(pThread, &CThread::threadCallback, 1, this, (u32)pThreadStack+iStackSize, iStackSize, iPriority, iAttributes);
+            OSCreateThread(pThread, &CThread::threadCallback, 1, (char*)this, pThreadStack+iStackSize, iStackSize, iPriority, iAttributes);
 	}
 
 	//! destructor
 	virtual ~CThread() { shutdownThread(); }
 
-	static CThread *create(CThread::Callback callback, void *callbackArg, s32 iAttr = eAttributeNone, s32 iPriority = 16, s32 iStackSize = 0x8000)
+	static CThread *create(CThread::Callback callback, void *callbackArg, int iAttr = eAttributeNone, int iPriority = 16, int iStackSize = 0x8000)
 	{
 	    return ( new CThread(iAttr, iPriority, iStackSize, callback, callbackArg) );
 	}
@@ -67,7 +66,7 @@ public:
 	//! Resume thread
 	virtual void resumeThread(void) { if(!isThreadSuspended()) return; if(pThread) OSResumeThread(pThread); }
 	//! Set thread priority
-	virtual void setThreadPriority(s32 prio) { if(pThread) OSSetThreadPriority(pThread, prio); }
+	virtual void setThreadPriority(int prio) { if(pThread) OSSetThreadPriority(pThread, prio); }
 	//! Check if thread is suspended
 	virtual bool isThreadSuspended(void) const { if(pThread) return OSIsThreadSuspended(pThread); return false; }
 	//! Check if thread is terminated
@@ -80,17 +79,17 @@ public:
 		//! wait for thread to finish
 		if(pThread && !(iAttributes & eAttributeDetach))
 		{
-		    while(isThreadSuspended()){
+		    if(isThreadSuspended())
                 resumeThread();
-            }
+
 			OSJoinThread(pThread, NULL);
 		}
 		//! free the thread stack buffer
-		if(pThreadStack){
+		if(pThreadStack)
 			free(pThreadStack);
-        }
 		if(pThread)
 			free(pThread);
+
 		pThread = NULL;
 		pThreadStack = NULL;
 	}
@@ -105,13 +104,13 @@ public:
 	    eAttributePinnedAff         = 0x10
 	};
 private:
-	static s32 threadCallback(s32 argc, void *arg)
+	static int threadCallback(int argc, const char **argv)
 	{
 		//! After call to start() continue with the internal function
-		((CThread *) arg)->executeThread();
+		((CThread *) argv)->executeThread();
 		return 0;
 	}
-    s32 iAttributes;
+    int iAttributes;
 	OSThread *pThread;
 	u8 *pThreadStack;
 	Callback pCallback;

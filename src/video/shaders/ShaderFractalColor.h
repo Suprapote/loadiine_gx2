@@ -103,7 +103,7 @@ public:
         VertexShader::setUniformReg(modelMatrixLocation, 16, &mtx[0][0]);
     }
 
-    void setBlurBorder(const float & blurBorderSize)
+    void setBlurBorder(const f32 & blurBorderSize)
     {
         PixelShader::setUniformReg(blurLocation, 4, &blurBorderSize);
     }

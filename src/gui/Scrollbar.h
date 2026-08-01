@@ -26,6 +26,7 @@
 
 #include "gui/GuiElement.h"
 #include "gui/GuiButton.h"
+#include "utils/utils.h"
 
 class Scrollbar : public GuiElement, public sigslot::has_slots<>
 {

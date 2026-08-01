@@ -3,14 +3,13 @@
 #include <map>
 #include <string.h>
 #include <fcntl.h>
-
 #include <zlib.h>
 #include "fs/fs_utils.h"
 #include "settings/CSettings.h"
 #include "GameLauncher.h"
 #include "fs/CFile.hpp"
 #include "fs/DirList.h"
-#include "kernel/kernel_functions.h"
+#include "../common/kernel_defs.h"
 #include "utils/StringTools.h"
 #include "utils/logger.h"
 #include "utils/xml.h"
@@ -19,6 +18,10 @@
 #include "settings/SettingsGameDefs.h"
 #include "utils/FileReplacer.h"
 #include "common/retain_vars.h"
+#include <coreinit/cache.h>
+#include <coreinit/dynload.h>
+#include <coreinit/memorymap.h>
+
 
 /* RPX stuff */
 #define RPX_SH_STRNDX_OFFSET            0x0032
@@ -34,7 +37,7 @@
 game_paths_t gamePathStruct;
 
 /* global variable for CosAppXml struct that is forced to data section */
-extern ReducedCosAppXmlInfo cosAppXmlInfoStruct;
+//extern ReducedCosAppXmlInfo cosAppXmlInfoStruct;
 
 GameLauncher * GameLauncher::loadGameToMemoryAsync(const discHeader *hdr)
 {
@@ -55,8 +58,8 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
         return INVALID_INPUT;
 
     //! initialize our tables required for the games
-    memoryInitAreaTable();
-    rpxRplTableInit();
+    //memoryInitAreaTable();
+    //rpxRplTableInit();
 
 
 	std::map<std::string, std::string> rplUpdateNameList;
@@ -69,12 +72,12 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
 	if(rpxList.GetFilecount() == 0)
 
     {
-        DEBUG_FUNCTION_LINE("RPX file not found!\n");
+        log_printf("RPX file not found!\n");
         return RPX_NOT_FOUND;
     }
     if(rpxList.GetFilecount() != 1)
     {
-        DEBUG_FUNCTION_LINE("Warning: Too many RPX files in the folder! Found %i files! Using first one.\n", rpxList.GetFilecount());
+        log_printf("Warning: Too many RPX files in the folder! Found %i files! Using first one.\n", rpxList.GetFilecount());
         //return TOO_MANY_RPX_NOT_FOUND;
     }
 
@@ -104,9 +107,9 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
 	bool gs_result = CSettingsGame::getInstance()->LoadGameSettings(header->id, gs);
 	bool use_new_xml = false;
 	if(gs_result){
-        DEBUG_FUNCTION_LINE("Found game settings\n");
+        log_printf("Found game settings\n");
         if(gs.updateFolder.compare(COMMON_UPDATE_PATH) != 0){
-            DEBUG_FUNCTION_LINE("Using Update folder\n");
+            log_printf("Using Update folder\n");
 
             gSettingUseUpdatepath = 1;
             updateFolder = gs.updateFolder;
@@ -117,51 +120,51 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
             //Checking RPX
             DirList rpxUpdateList(completeUpdatePath + RPX_RPL_PATH, ".rpx", DirList::Files);
             if(rpxUpdateList.GetFilecount() != 0){
-                DEBUG_FUNCTION_LINE("Using RPX from update path\n");
+                log_printf("Using RPX from update path\n");
                 use_new_xml = true;
                 rpxName = rpxUpdateList.GetFilename(0);
                 rpxPath = rpxUpdateList.GetFilepath(0);
             }else{
-                DEBUG_FUNCTION_LINE("Using RPX from game path\n");
+                log_printf("Using RPX from game path\n");
             }
 
             //Checking RPL
             DirList rplUpdateList(completeUpdatePath + RPX_RPL_PATH, ".rpl", DirList::Files);
             if(rplUpdateList.GetFilecount() != 0)
             {
-                DEBUG_FUNCTION_LINE("Using RPL from update path\n");
+                log_printf("Using RPL from update path\n");
                 for(int i = 0; i < rplUpdateList.GetFilecount(); i++){
                     rplUpdateNameList[rplUpdateList.GetFilename(i)] = rplUpdateList.GetFilepath(i);
                     rplFinalNameList[rplUpdateList.GetFilename(i)] = rplUpdateList.GetFilepath(i);
                 }
             }else{
-                DEBUG_FUNCTION_LINE("Using RPL from game path\n");
+                log_printf("Using RPL from game path\n");
             }
 
             if(gs.extraSave){
-               DEBUG_FUNCTION_LINE("Using extra save path for update\n");
+               log_printf("Using extra save path for update\n");
                extra_save = true;
             }
 		}else{
-            DEBUG_FUNCTION_LINE("Not using Update folder\n");
+            log_printf("Not using Update folder\n");
             gSettingUseUpdatepath = 0;
         }
 
 		switch(gs.save_method){
 			case GAME_SAVES_DEFAULT:
-				DEBUG_FUNCTION_LINE("Using save method from Settings\n");
+				log_printf("Using save method from Settings\n");
 				break; //leave it from settings
 			case GAME_SAVES_SHARED:
-				DEBUG_FUNCTION_LINE("Using GAME_SAVES_SHARED cfg\n");
+				log_printf("Using GAME_SAVES_SHARED cfg\n");
 				save_method = GAME_SAVES_SHARED;
 				break;
 			case GAME_SAVES_UNIQUE:
-				DEBUG_FUNCTION_LINE("Using GAME_SAVES_UNIQUE cfg\n");
+				log_printf("Using GAME_SAVES_UNIQUE cfg\n");
 				save_method = GAME_SAVES_UNIQUE;
 				break;
 			default:
-				DEBUG_FUNCTION_LINE("Default: GAME_SAVES_SHARED\n");
-				DEBUG_FUNCTION_LINE("%d\n",gs.save_method);
+				log_printf("Default: GAME_SAVES_SHARED\n");
+				log_printf("%d\n",gs.save_method);
 				save_method = GAME_SAVES_SHARED;
 				break;
 		}
@@ -176,10 +179,10 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
     int result = LoadRpxRplToMem(rpxPath.c_str(), rpxName.c_str(), true, entryIndex++, rplImportList);
     if(result < 0)
     {
-        DEBUG_FUNCTION_LINE("Failed loading RPX file %s, error %i\n", rpxName.c_str(), result);
+        log_printf("Failed loading RPX file %s, error %i\n", rpxName.c_str(), result);
         return result;
     }else{
-		DEBUG_FUNCTION_LINE("Loaded RPX file %s, result %i\n", rpxPath.c_str(), result);
+		log_printf("Loaded RPX file %s, result %i\n", rpxPath.c_str(), result);
 	}
 
 	//! add missing rpl to vector
@@ -200,7 +203,7 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
             std::transform(old_lower.begin(), old_lower.end(), old_lower.begin(), ::tolower);
             std::transform(new_lower.begin(), new_lower.end(), new_lower.begin(), ::tolower);
             if(old_lower.compare(new_lower) == 0){
-                DEBUG_FUNCTION_LINE("Adding RPL %s from %s\n",itr_lower->first.c_str(),itr_lower->second.c_str());
+                log_printf("Adding RPL %s from %s\n",itr_lower->first.c_str(),itr_lower->second.c_str());
                 rplFinalNameList[itr_lower->first] = itr_lower->second;
                 found = true;
                 break;
@@ -208,7 +211,7 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
         }
 
 		if(!found){
-			DEBUG_FUNCTION_LINE("Adding RPL %s from %s\n",rplList.GetFilename(i),rplList.GetFilepath(i));
+			log_printf("Adding RPL %s from %s\n",rplList.GetFilename(i),rplList.GetFilepath(i));
 			rplFinalNameList[rplList.GetFilename(i)] = rplList.GetFilepath(i);
 		}
 	}
@@ -220,10 +223,10 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
         result = LoadRpxRplToMem(itr->second.c_str(), itr->first.c_str(), false, entryIndex++, rplImportList);
         if(result < 0)
         {
-            DEBUG_FUNCTION_LINE("Failed loading RPL file %s, error %i\n", itr->second.c_str(), result);
+            log_printf("Failed loading RPL file %s, error %i\n", itr->second.c_str(), result);
             return result;
         }else{
-			DEBUG_FUNCTION_LINE("Loaded RPL file %s, result %i\n", itr->second.c_str(), result);
+			log_printf("Loaded RPL file %s, result %i\n", itr->second.c_str(), result);
 		}
     }
 
@@ -235,16 +238,16 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
     else
     {
         /* get persistent ID - thanks to Maschell */
-        u32 nn_act_handle;
+        void* nn_act_handle;
         u64 (*GetPersistentIdEx)(unsigned char);
         s32 (*GetSlotNo)(void);
         void (*nn_Initialize)(void);
         void (*nn_Finalize)(void);
         OSDynLoad_Acquire("nn_act.rpl", &nn_act_handle);
-        OSDynLoad_FindExport(nn_act_handle, 0, "GetPersistentIdEx__Q2_2nn3actFUc", &GetPersistentIdEx);
-        OSDynLoad_FindExport(nn_act_handle, 0, "GetSlotNo__Q2_2nn3actFv", &GetSlotNo);
-        OSDynLoad_FindExport(nn_act_handle, 0, "Initialize__Q2_2nn3actFv", &nn_Initialize);
-        OSDynLoad_FindExport(nn_act_handle, 0, "Finalize__Q2_2nn3actFv", &nn_Finalize);
+        OSDynLoad_FindExport(nn_act_handle, OS_DYNLOAD_EXPORT_FUNC, "GetPersistentIdEx__Q2_2nn3actFUc", (void**)&GetPersistentIdEx);
+        OSDynLoad_FindExport(nn_act_handle, OS_DYNLOAD_EXPORT_FUNC, "GetSlotNo__Q2_2nn3actFv", (void**)&GetSlotNo);
+        OSDynLoad_FindExport(nn_act_handle, OS_DYNLOAD_EXPORT_FUNC, "Initialize__Q2_2nn3actFv", (void**)&nn_Initialize);
+        OSDynLoad_FindExport(nn_act_handle, OS_DYNLOAD_EXPORT_FUNC, "Finalize__Q2_2nn3actFv", (void**)&nn_Finalize);
 
         nn_Initialize(); // To be sure that it is really Initialized
 
@@ -268,11 +271,17 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
     }
 
 
-    std::string tempPath = CSettings::getValueAsString(CSettings::GamePath);
-    //! remove "sd:" and replace with "/vol/external01"
+    std::string tempPath = header->gamepath;
+    pos = tempPath.rfind('/');
+    if(pos != std::string::npos)
+        tempPath = tempPath.substr(0,pos);
+
+	//! remove "sd:" and replace with "/vol/external01"
     pos = tempPath.find('/');
     if(pos != std::string::npos)
         tempPath = std::string(CAFE_OS_SD_PATH) + tempPath.substr(pos);
+
+    log_printf("tempPath: %s\n", tempPath.c_str());
 
     strlcpy(gamePathStruct.os_game_path_base, tempPath.c_str(), sizeof(gamePathStruct.os_game_path_base));
 
@@ -294,39 +303,39 @@ int GameLauncher::loadGameToMemory(const discHeader *header)
         gamePathStruct.extraSave = 0;
     }
 
-    DEBUG_FUNCTION_LINE("gamePathStruct.os_game_path_base: %s\n", gamePathStruct.os_game_path_base);
-    DEBUG_FUNCTION_LINE("gamePathStruct.os_save_path_base: %s\n", gamePathStruct.os_save_path_base);
-    DEBUG_FUNCTION_LINE("gamePathStruct.game_dir:          %s\n", gamePathStruct.game_dir);
-	DEBUG_FUNCTION_LINE("gamePathStruct.update_folder:     %s\n", gamePathStruct.update_folder);
-    DEBUG_FUNCTION_LINE("gamePathStruct.save_dir_common:   %s\n", gamePathStruct.save_dir_common);
-    DEBUG_FUNCTION_LINE("gamePathStruct.save_dir_user:     %s\n", gamePathStruct.save_dir_user);
-    DEBUG_FUNCTION_LINE("gamePathStruct.extraSave:         %d\n", gamePathStruct.extraSave);
+    log_printf("gamePathStruct.os_game_path_base: %s\n", gamePathStruct.os_game_path_base);
+    log_printf("gamePathStruct.os_save_path_base: %s\n", gamePathStruct.os_save_path_base);
+    log_printf("gamePathStruct.game_dir:          %s\n", gamePathStruct.game_dir);
+	log_printf("gamePathStruct.update_folder:     %s\n", gamePathStruct.update_folder);
+    log_printf("gamePathStruct.save_dir_common:   %s\n", gamePathStruct.save_dir_common);
+    log_printf("gamePathStruct.save_dir_user:     %s\n", gamePathStruct.save_dir_user);
+    log_printf("gamePathStruct.extraSave:         %d\n", gamePathStruct.extraSave);
 
 	if(!use_new_xml){
-        DEBUG_FUNCTION_LINE("Getting XML from game\n");
+        log_printf("Getting XML from game\n");
 		LoadXmlParameters(&cosAppXmlInfoStruct, rpxName.c_str(), (header->gamepath + RPX_RPL_PATH).c_str());
 	}else{
-        DEBUG_FUNCTION_LINE("Getting XML from update\n");
+        log_printf("Getting XML from update\n");
 		LoadXmlParameters(&cosAppXmlInfoStruct, rpxName.c_str(), (completeUpdatePath + RPX_RPL_PATH).c_str());
 	}
 
     DCFlushRange((void*)&cosAppXmlInfoStruct, sizeof(ReducedCosAppXmlInfo));
 
-    DEBUG_FUNCTION_LINE("XML Launching Parameters\n");
-    DEBUG_FUNCTION_LINE("rpx_name:        %s\n", cosAppXmlInfoStruct.rpx_name);
-    DEBUG_FUNCTION_LINE("version_cos_xml: %i\n", cosAppXmlInfoStruct.version_cos_xml);
-    DEBUG_FUNCTION_LINE("os_version:      %08X%08X\n", (unsigned int)(cosAppXmlInfoStruct.os_version >> 32), (unsigned int)(cosAppXmlInfoStruct.os_version & 0xFFFFFFFF));
-    DEBUG_FUNCTION_LINE("title_id:        %08X%08X\n", (unsigned int)(cosAppXmlInfoStruct.title_id >> 32), (unsigned int)(cosAppXmlInfoStruct.title_id & 0xFFFFFFFF));
-    DEBUG_FUNCTION_LINE("app_type:        %08X\n", cosAppXmlInfoStruct.app_type);
-    DEBUG_FUNCTION_LINE("cmdFlags:        %08X\n", cosAppXmlInfoStruct.cmdFlags);
-    DEBUG_FUNCTION_LINE("max_size:        %08X\n", cosAppXmlInfoStruct.max_size);
-    DEBUG_FUNCTION_LINE("avail_size:      %08X\n", cosAppXmlInfoStruct.avail_size);
-    DEBUG_FUNCTION_LINE("codegen_size:    %08X\n", cosAppXmlInfoStruct.codegen_size);
-    DEBUG_FUNCTION_LINE("codegen_core:    %08X\n", cosAppXmlInfoStruct.codegen_core);
-    DEBUG_FUNCTION_LINE("max_codesize:    %08X\n", cosAppXmlInfoStruct.max_codesize);
-    DEBUG_FUNCTION_LINE("overlay_arena:   %08X\n", cosAppXmlInfoStruct.overlay_arena);
-    DEBUG_FUNCTION_LINE("sdk_version:     %i\n", cosAppXmlInfoStruct.sdk_version);
-    DEBUG_FUNCTION_LINE("title_version:   %08X\n", cosAppXmlInfoStruct.title_version);
+    log_printf("XML Launching Parameters\n");
+    log_printf("rpx_name:        %s\n", cosAppXmlInfoStruct.rpx_name);
+    log_printf("version_cos_xml: %i\n", cosAppXmlInfoStruct.version_cos_xml);
+    log_printf("os_version:      %08X%08X\n", (unsigned int)(cosAppXmlInfoStruct.os_version >> 32), (unsigned int)(cosAppXmlInfoStruct.os_version & 0xFFFFFFFF));
+    log_printf("title_id:        %08X%08X\n", (unsigned int)(cosAppXmlInfoStruct.title_id >> 32), (unsigned int)(cosAppXmlInfoStruct.title_id & 0xFFFFFFFF));
+    log_printf("app_type:        %08X\n", cosAppXmlInfoStruct.app_type);
+    log_printf("cmdFlags:        %08X\n", cosAppXmlInfoStruct.cmdFlags);
+    log_printf("max_size:        %08X\n", cosAppXmlInfoStruct.max_size);
+    log_printf("avail_size:      %08X\n", cosAppXmlInfoStruct.avail_size);
+    log_printf("codegen_size:    %08X\n", cosAppXmlInfoStruct.codegen_size);
+    log_printf("codegen_core:    %08X\n", cosAppXmlInfoStruct.codegen_core);
+    log_printf("max_codesize:    %08X\n", cosAppXmlInfoStruct.max_codesize);
+    log_printf("overlay_arena:   %08X\n", cosAppXmlInfoStruct.overlay_arena);
+    log_printf("sdk_version:     %i\n", cosAppXmlInfoStruct.sdk_version);
+    log_printf("title_version:   %08X\n", cosAppXmlInfoStruct.title_version);
 
     return 0;
 }
@@ -335,7 +344,7 @@ bool GameLauncher::createFileList(const std::string & filepath){
     bool result = false;
 
     std::string filelist_name = filepath + "/" +  std::string(FILELIST_NAME);
-    DEBUG_FUNCTION_LINE("Reading %s\n",filelist_name.c_str());
+    log_printf("Reading %s\n",filelist_name.c_str());
     bool createNewFile = true;
     CFile file(filelist_name, CFile::ReadOnly);
     if (file.isOpen()){
@@ -345,25 +354,25 @@ bool GameLauncher::createFileList(const std::string & filepath){
         file.close();
     }
     if(createNewFile){
-        DEBUG_FUNCTION_LINE("Filelist is missing, creating it!\n");
+        log_printf("Filelist is missing, creating it!\n");
 
-        DEBUG_FUNCTION_LINE("Creating filelist of content in %s\n",filepath.c_str());
-        DEBUG_FUNCTION_LINE("Saving it to %s\n",filelist_name.c_str());
+        log_printf("Creating filelist of content in %s\n",filepath.c_str());
+        log_printf("Saving it to %s\n",filelist_name.c_str());
         progressWindow.setProgress(100.0f);
         FileReplacer replacer(filepath,CONTENT_PATH,"",progressWindow);
-        progressWindow.setTitle("");
+        progressWindow.setInfo("");
         std::string strBuffer = replacer.getFileListAsString();
         if(strBuffer.length() > 0){
             CFile  filelist(filelist_name, CFile::WriteOnly);
             if (filelist.isOpen()){
                 int ret = 0;
-                progressWindow.setTitle("Writing list to SD");
+                progressWindow.setInfo("Writing list to SD");
                 if((ret = filelist.write((u8*)strBuffer.c_str(), strBuffer.size())) == -1){
-                    DEBUG_FUNCTION_LINE("Error on write: %d\n",ret);
+                    log_printf("Error on write: %d\n",ret);
                 }
                 filelist.close();
             }else{
-                DEBUG_FUNCTION_LINE("Error. Couldn't open file\n");
+                log_printf("Error. Couldn't open file\n");
             }
         }
 
@@ -373,7 +382,7 @@ bool GameLauncher::createFileList(const std::string & filepath){
 
 int GameLauncher::LoadRpxRplToMem(const std::string & path, const std::string & name, bool isRPX, int entryIndex, std::vector<std::string> & rplImportList)
 {
-    // For RPLs :
+/*    // For RPLs :
     int preload = 0;
     if(!isRPX)
     {
@@ -394,7 +403,7 @@ int GameLauncher::LoadRpxRplToMem(const std::string & path, const std::string & 
             rpxRplTableAddEntry(name.c_str(), 0, 0, isRPX, entryIndex, memoryGetAreaTable());
             return 1;
         }
-        DEBUG_FUNCTION_LINE("Pre-loading RPL %s because its in the fimport section\n", name.c_str());
+        log_printf("Pre-loading RPL %s because its in the fimport section\n", name.c_str());
     }
 
     CFile file(path, CFile::ReadOnly);
@@ -415,7 +424,7 @@ int GameLauncher::LoadRpxRplToMem(const std::string & path, const std::string & 
 
     if(!mem_area)
     {
-        DEBUG_FUNCTION_LINE("Not enough memory for file %s\n", path.c_str());
+        log_printf("Not enough memory for file %s\n", path.c_str());
         return NOT_ENOUGH_MEMORY;
     }
 
@@ -423,18 +432,21 @@ int GameLauncher::LoadRpxRplToMem(const std::string & path, const std::string & 
     std::string strBuffer;
     strBuffer.resize(0x10000);
     unsigned char *pBuffer = (unsigned char*)&strBuffer[0];
-    unsigned char *pBufferPhysical = (unsigned char*)OSEffectiveToPhysical(&strBuffer[0]);
+    unsigned char *pBufferPhysical = (unsigned char*)OSEffectiveToPhysical((u32)&strBuffer[0]);
 
     // fill rpx entry
     u32 bytesRead = 0;
     s_rpx_rpl* rpx_rpl_struct = rpxRplTableAddEntry(name.c_str(), mem_area_offset, 0, isRPX, entryIndex, mem_area);
     if(!rpx_rpl_struct)
     {
-        DEBUG_FUNCTION_LINE("Not enough memory for file %s\n", path.c_str());
+        log_printf("Not enough memory for file %s\n", path.c_str());
         return NOT_ENOUGH_MEMORY;
     }
 
-    progressWindow.setTitle(strfmt("Loading file %s", name.c_str()));
+    std::string progressMsg = tr("Loading file");
+	progressMsg += " ";
+	progressMsg += name.c_str();
+    progressWindow.setInfo(progressMsg.c_str());
 
     // Copy rpl in memory
     while(bytesRead < fileSize)
@@ -448,7 +460,7 @@ int GameLauncher::LoadRpxRplToMem(const std::string & path, const std::string & 
         int ret = file.read(pBuffer, blockSize);
         if(ret <= 0)
         {
-            DEBUG_FUNCTION_LINE("Failure on reading file %s\n", path.c_str());
+            log_printf("Failure on reading file %s\n", path.c_str());
             break;
         }
 
@@ -457,7 +469,7 @@ int GameLauncher::LoadRpxRplToMem(const std::string & path, const std::string & 
         int copiedData = rpxRplCopyDataToMem(rpx_rpl_struct, bytesRead, pBufferPhysical, ret);
         if(copiedData != ret)
         {
-            DEBUG_FUNCTION_LINE("Not enough memory for file %s. Could not copy all data %i != %i.\n", rpx_rpl_struct->name, copiedData, ret);
+            log_printf("Not enough memory for file %s. Could not copy all data %i != %i.\n", rpx_rpl_struct->name, copiedData, ret);
             return NOT_ENOUGH_MEMORY;
         }
         rpx_rpl_struct->size += ret;
@@ -468,14 +480,14 @@ int GameLauncher::LoadRpxRplToMem(const std::string & path, const std::string & 
 
     if(bytesRead != fileSize)
     {
-        DEBUG_FUNCTION_LINE("File loading not finished for file %s, finished %i of %i bytes\n", path.c_str(), bytesRead, fileSize);
+        log_printf("File loading not finished for file %s, finished %i of %i bytes\n", path.c_str(), bytesRead, fileSize);
         return FILE_READ_ERROR;
     }
 
     // remember which RPX has to be checked for on loader for allowing the list compare
     if(isRPX) {
         RPX_CHECK_NAME = *(unsigned int*)name.c_str();
-    }
+    }*/
 
     // return okay
     return 0;
@@ -487,13 +499,13 @@ void GameLauncher::GetRpxImportsRecursive(CFile file, std::vector<std::string> &
     strBuffer.resize(0x1000);
 
     if(!file.isOpen()){
-         DEBUG_FUNCTION_LINE("GetRpxImportsRecursive error: file not open\n");
+         log_printf("GetRpxImportsRecursive error: file not open\n");
          return;
     }
 
     // get the header information of the RPX
     if(file.read((unsigned char *)&strBuffer[0], 0x1000) == -1){
-        DEBUG_FUNCTION_LINE("GetRpxImportsRecursive error: reading file\n");
+        log_printf("GetRpxImportsRecursive error: reading file\n");
         return;
     }
     // Who needs error checks...
@@ -517,12 +529,12 @@ void GameLauncher::GetRpxImportsRecursive(CFile file, std::vector<std::string> &
     int res = 0;
     // get the header information of the RPX
     if((res = file.seek(section_offset_aligned,SEEK_SET)) != section_offset_aligned){
-        DEBUG_FUNCTION_LINE("GetRpxImportsRecursive error: file.seek failed! Result: %d, %d\n",res);
+        log_printf("GetRpxImportsRecursive error: file.seek failed! Result: %d, %d\n",res);
         return;
     }
 
     if((res = file.read((unsigned char *)&section_data[0], section_size_aligned)) == -1){
-        DEBUG_FUNCTION_LINE("GetRpxImportsRecursive error: file read failed! Result: %d\n",res);
+        log_printf("GetRpxImportsRecursive error: file read failed! Result: %d\n",res);
         return;
     }
 
@@ -535,16 +547,16 @@ void GameLauncher::GetRpxImportsRecursive(CFile file, std::vector<std::string> &
         inflatedData.resize(section_size_inflated);
 
         u32 zlib_handle;
-        OSDynLoad_Acquire("zlib125", &zlib_handle);
+        OSDynLoad_Acquire("zlib125", (void**)&zlib_handle);
 
         /* Zlib functions */
         int(*ZinflateInit_)(z_streamp strm, const char *version, int stream_size);
         int(*Zinflate)(z_streamp strm, int flush);
         int(*ZinflateEnd)(z_streamp strm);
 
-        OSDynLoad_FindExport(zlib_handle, 0, "inflateInit_", &ZinflateInit_);
-        OSDynLoad_FindExport(zlib_handle, 0, "inflate", &Zinflate);
-        OSDynLoad_FindExport(zlib_handle, 0, "inflateEnd", &ZinflateEnd);
+        OSDynLoad_FindExport((OSDynLoad_Module)zlib_handle, OS_DYNLOAD_EXPORT_FUNC, "inflateInit_", (void**)&ZinflateInit_);
+        OSDynLoad_FindExport((OSDynLoad_Module)zlib_handle, OS_DYNLOAD_EXPORT_FUNC, "inflate", (void**)&Zinflate);
+        OSDynLoad_FindExport((OSDynLoad_Module)zlib_handle, OS_DYNLOAD_EXPORT_FUNC, "inflateEnd", (void**)&ZinflateEnd);
 
         int ret = 0;
         z_stream s;
@@ -600,7 +612,7 @@ void GameLauncher::GetRpxImportsRecursive(CFile file, std::vector<std::string> &
                     import_lower  = import;
                     std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(), ::tolower);
                     std::transform(import_lower.begin(), import_lower.end(), import_lower.begin(), ::tolower);
-                    //DEBUG_FUNCTION_LINE("%s = %s\n",name_lower.c_str(),import_lower.c_str());
+                    //log_printf("%s = %s\n",name_lower.c_str(),import_lower.c_str());
                     if(name_lower.compare(import_lower) == 0){
                         found = true;
 
@@ -614,7 +626,7 @@ void GameLauncher::GetRpxImportsRecursive(CFile file, std::vector<std::string> &
                         GetRpxImportsRecursive(newFile,rplImports,rplNameList);
                         newFile.close();
                     }else{
-                        DEBUG_FUNCTION_LINE("GetRpxImportsRecursive error: Couldn't open RPL (RPL: %s from path: %s)\n",import.c_str(),itr->second.c_str());
+                        log_printf("GetRpxImportsRecursive error: Couldn't open RPL (RPL: %s from path: %s)\n",import.c_str(),itr->second.c_str());
                     }
                 }
             }

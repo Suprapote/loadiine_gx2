@@ -25,6 +25,8 @@
 #include "fs/fs_utils.h"
 #include "utils/StringTools.h"
 #include "utils/logger.h"
+#include "../common/types.h"
+#include "SettingsGameDefs.h"
 
 #define VERSION_LINE        "# Loadiine GX2 - Game settings file v"
 #define VALID_VERSION       1

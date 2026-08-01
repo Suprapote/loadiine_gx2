@@ -3,9 +3,9 @@
 #include "menu/ProgressWindow.h"
 #include <sys/dirent.h>
 extern "C" {
-  #include "fs/sd_fat_devoptab.h"
-  #include "patcher/fs_logger.h"
-  #include "dynamic_libs/fs_functions.h"
+  
+  //#include "patcher/fs_logger.h"
+  //#include "dynamic_libs/fs_functions.h"
 }
 
 class FileReplacer

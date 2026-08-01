@@ -2,7 +2,7 @@
 #define GAME_LIST_H_
 
 #include <vector>
-#include <gctypes.h>
+#include <wut_types.h>
 
 typedef struct _discHeader
 {
@@ -55,7 +55,8 @@ class GameList
 	protected:
 		GameList() : selectedGame(0) { };
 
-		int readGameList();
+		void readGameList();
+		std::vector<std::string> getGameList(std::string gamePath);
 
 		void internalFilterList(std::vector<discHeader> & fullList);
 		void internalLoadUnfiltered(std::vector<discHeader> & fullList);

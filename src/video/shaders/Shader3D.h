@@ -105,7 +105,7 @@ public:
     {
         PixelShader::setUniformReg(fadeOutLocation, 4, &vec[0]);
     }
-    void setDistanceFadeOut(const float & value)
+    void setDistanceFadeOut(const f32 & value)
     {
         PixelShader::setUniformReg(fadeDistanceLocation, 4, &value);
     }

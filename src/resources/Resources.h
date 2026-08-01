@@ -3,6 +3,8 @@
 
 
 #include <map>
+#include <string>
+#include "../common/types.h"
 
 //! forward declaration
 class GuiImageData;

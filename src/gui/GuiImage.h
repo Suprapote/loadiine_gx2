@@ -20,6 +20,7 @@
 #include "video/shaders/Shader.h"
 #include "GuiElement.h"
 #include "GuiImageData.h"
+#include "../common/gx2_ext.h"
 
 //!Display, manage, and manipulate images in the GUI
 class GuiImage : public GuiElement

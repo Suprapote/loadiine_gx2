@@ -22,19 +22,19 @@
 #include "game/GameList.h"
 #include "resources/Resources.h"
 
-static const float RADIUS = 0.9f;
-static const float radiusScale = 1.0f; // 1:1 game
-static const float Yoffset = 0.04f;
-static const float cam_X_rot = 25.0f;
-static const float fIconRgbDrop = 0.395f;
-static const float fOpacy = 1.0f;
+static const f32 RADIUS = 0.9f;
+static const f32 radiusScale = 1.0f; // 1:1 game
+static const f32 Yoffset = 0.04f;
+static const f32 cam_X_rot = 25.0f;
+static const f32 fIconRgbDrop = 0.395f;
+static const f32 fOpacy = 1.0f;
 
 GuiIconCarousel::GuiIconCarousel(int w, int h, int GameIndex)
     : GuiGameBrowser(w, h, GameIndex)
     , buttonClickSound(Resources::GetSound("button_click.mp3"))
-    , bgGridData(Resources::GetFile("bgGridTile.png"), Resources::GetFileSize("bgGridTile.png"), GX2_TEX_CLAMP_WRAP)
+    , bgGridData(Resources::GetFile("bgGridTile.png"), Resources::GetFileSize("bgGridTile.png"), GX2_TEX_CLAMP_MODE_WRAP)
     , bgGrid(&bgGridData)
-    , noIcon(Resources::GetFile("noGameIcon.png"), Resources::GetFileSize("noGameIcon.png"), GX2_TEX_CLAMP_MIRROR)
+    , noIcon(Resources::GetFile("noGameIcon.png"), Resources::GetFileSize("noGameIcon.png"), GX2_TEX_CLAMP_MODE_MIRROR)
     , bgUsedImageDataAsync(NULL)
     , bgNewImageDataAsync(NULL)
     , bgFadingImageDataAsync(NULL)
@@ -271,8 +271,8 @@ void GuiIconCarousel::OnTouchRelease(GuiButton *button, const GuiController *con
 
     for(u32 i = 0; i < gameIcons.size(); i++)
     {
-        float currDegree = DegToRad(360.0f / (radiusScale * gameIcons.size()) * i + circleTargetPosition + 90.0f);
-        float posZ = radiusScale * circleRadius * sinf(currDegree) + RADIUS - gameIcons.size() * (RADIUS / 12.0f);
+        f32 currDegree = DegToRad(360.0f / (radiusScale * gameIcons.size()) * i + circleTargetPosition + 90.0f);
+        f32 posZ = radiusScale * circleRadius * sinf(currDegree) + RADIUS - gameIcons.size() * (RADIUS / 12.0f);
 
         if(zMax < posZ)
         {
@@ -356,24 +356,24 @@ void GuiIconCarousel::OnRightSkipClick(GuiButton *button, const GuiController *c
 void GuiIconCarousel::updateDrawMap(void)
 {
     //! create a multimap of Z position which will sort the items by z coordinate
-    std::multimap< float, std::pair<float, int> > drawMap;
-    std::multimap< float, std::pair<float, int> >::const_iterator itr;
+    std::multimap< f32, std::pair<f32, int> > drawMap;
+    std::multimap< f32, std::pair<f32, int> >::const_iterator itr;
     size_t i;
 
     for(i = 0; i < gameIcons.size(); i++)
     {
         int idx = i;
 
-        float currDegree = DegToRad(360.0f / (radiusScale * gameIcons.size()) * i + circlePosition + 90.0f);
-        float posX = radiusScale * circleRadius * cosf(currDegree);
-        float posZ = radiusScale * circleRadius * sinf(currDegree) + RADIUS - gameIcons.size() * (RADIUS / 12.0f);
-        drawMap.insert(std::pair<float, std::pair<float, int> >(posZ, std::pair<float, int>(posX, i)));
+        f32 currDegree = DegToRad(360.0f / (radiusScale * gameIcons.size()) * i + circlePosition + 90.0f);
+        f32 posX = radiusScale * circleRadius * cosf(currDegree);
+        f32 posZ = radiusScale * circleRadius * sinf(currDegree) + RADIUS - gameIcons.size() * (RADIUS / 12.0f);
+        drawMap.insert(std::pair<f32, std::pair<f32, int> >(posZ, std::pair<f32, int>(posX, i)));
 
-        float rgbReduction = std::min((circleRadius + posZ / 2.0f + fIconRgbDrop) / (2.0f * circleRadius), 1.0f);
+        f32 rgbReduction = std::min((circleRadius + posZ / 2.0f + fIconRgbDrop) / (2.0f * circleRadius), 1.0f);
         if(rgbReduction < 0.0f)
             rgbReduction = 0.0f;
 
-        float alphaReduction = std::min((circleRadius + posZ + fOpacy * (circleRadius * 2.0f)) / (2.0f * circleRadius), 1.0f);
+        f32 alphaReduction = std::min((circleRadius + posZ + fOpacy * (circleRadius * 2.0f)) / (2.0f * circleRadius), 1.0f);
         if(alphaReduction < 0.0f)
             alphaReduction = 0.0f;
 
@@ -394,7 +394,7 @@ void GuiIconCarousel::updateDrawMap(void)
 
         if(!bSelected)
         {
-            float rgbReduction = 0.8f;
+            f32 rgbReduction = 0.8f;
             glm::vec4 intensity = gameIcons[idx]->getColorIntensity();
             gameIcons[idx]->setColorIntensity(glm::vec4(rgbReduction * intensity[0], rgbReduction * intensity[1], rgbReduction * intensity[2], intensity[3]));
         }

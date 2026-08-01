@@ -85,7 +85,7 @@ class GuiFrame : public GuiElement
         //!virtual updateEffects which is called by the main loop
         virtual void updateEffects();
         //!virtual process which is called by the main loop
-        virtual void process();
+        //virtual void process();
         //! Signals
         //! On Closing
         sigslot::signal1<GuiFrame *> closing;

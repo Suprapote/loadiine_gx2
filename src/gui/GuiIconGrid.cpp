@@ -24,8 +24,8 @@
 GuiIconGrid::GuiIconGrid(int w, int h, int GameIndex)
     : GuiGameBrowser(w, h, GameIndex)
     , buttonClickSound(Resources::GetSound("button_click.mp3"))
-    , noIcon(Resources::GetFile("noGameIcon.png"), Resources::GetFileSize("noGameIcon.png"), GX2_TEX_CLAMP_MIRROR)
-    , emptyIcon(Resources::GetFile("iconEmpty.jpg"), Resources::GetFileSize("iconEmpty.jpg"), GX2_TEX_CLAMP_MIRROR)
+    , noIcon(Resources::GetFile("noGameIcon.png"), Resources::GetFileSize("noGameIcon.png"), GX2_TEX_CLAMP_MODE_MIRROR)
+    , emptyIcon(Resources::GetFile("iconEmpty.jpg"), Resources::GetFileSize("iconEmpty.jpg"), GX2_TEX_CLAMP_MODE_MIRROR)
     , particleBgImage(w, h, 50)
     , gameTitle((char*)NULL, 52, glm::vec4(1.0f))
     , touchTrigger(GuiTrigger::CHANNEL_1, GuiTrigger::VPAD_TOUCH)
@@ -401,8 +401,8 @@ void GuiIconGrid::updateButtonPositions()
     {
         listOff = i / (MAX_COLS * MAX_ROWS);
 
-        float posX = currentLeftPosition + listOff * width + ( col * (noIcon.getWidth() + noIcon.getWidth() * 0.5f) - (MAX_COLS * 0.5f - 0.5f) * (noIcon.getWidth() + noIcon.getWidth() * 0.5f) );
-        float posY = -row * (noIcon.getHeight() + noIcon.getHeight() * 0.5f) + (MAX_ROWS * 0.5f - 0.5f) * (noIcon.getHeight() + noIcon.getHeight() * 0.5f) + 30.0f;
+        f32 posX = currentLeftPosition + listOff * width + ( col * (noIcon.getWidth() + noIcon.getWidth() * 0.5f) - (MAX_COLS * 0.5f - 0.5f) * (noIcon.getWidth() + noIcon.getWidth() * 0.5f) );
+        f32 posY = -row * (noIcon.getHeight() + noIcon.getHeight() * 0.5f) + (MAX_ROWS * 0.5f - 0.5f) * (noIcon.getHeight() + noIcon.getHeight() * 0.5f) + 30.0f;
 
         gameButtons[i]->setPosition(posX, posY);
 

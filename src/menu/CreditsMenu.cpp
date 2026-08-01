@@ -17,14 +17,14 @@
 #include "CreditsMenu.h"
 #include "Application.h"
 
-CreditsMenu::CreditsMenu(int w, int h, const std::string & title)
+CreditsMenu::CreditsMenu(int w, int h, const std::string & title, const char *nameTitleImage)
     : GuiFrame(w, h)
     , creditsMusic(Resources::GetSound("credits_music.ogg"))
     , buttonClickSound(Resources::GetSound("settings_click_2.mp3"))
     , backImageData(Resources::GetImageData("backButton.png"))
     , backImage(backImageData)
     , backButton(backImage.getWidth(), backImage.getHeight())
-    , titleImageData(Resources::GetImageData("settingsTitle.png"))
+    , titleImageData(Resources::GetImageData(nameTitleImage))
     , titleImage(titleImageData)
     , touchTrigger(GuiTrigger::CHANNEL_1, GuiTrigger::VPAD_TOUCH)
     , wpadTouchTrigger(GuiTrigger::CHANNEL_2 | GuiTrigger::CHANNEL_3 | GuiTrigger::CHANNEL_4 | GuiTrigger::CHANNEL_5, GuiTrigger::BUTTON_A)
@@ -66,7 +66,7 @@ CreditsMenu::CreditsMenu(int w, int h, const std::string & title)
     int fontSize = 40;
     glm::vec4 textColor = glm::vec4(1.0f);
 
-    text = new GuiText(tr("Loadiine GX2"), 56, textColor);
+    text = new GuiText(tr("Loadiine GX2 - Aroma"), 56, textColor);
     text->setPosition(0, positionY);
     text->setAlignment(ALIGN_CENTER | ALIGN_MIDDLE);
     creditsText.push_back(text);
@@ -79,14 +79,14 @@ CreditsMenu::CreditsMenu(int w, int h, const std::string & title)
     creditsText.push_back(text);
     append(text);
 
-    text = new GuiText("https://gbatemp.net/threads/413823", fontSize, textColor);
+    text = new GuiText("https://github.com/Suprapote/loadiine_gx2", fontSize, textColor);
     text->setPosition(positionX2, positionY);
     text->setAlignment(ALIGN_LEFT | ALIGN_MIDDLE);
     creditsText.push_back(text);
     append(text);
     positionY -= 50;
 
-    text = new GuiText(tr("Coding:"), fontSize, textColor);
+    text = new GuiText(tr("Original project:"), fontSize, textColor);
     text->setPosition(positionX, positionY);
     text->setAlignment(ALIGN_LEFT | ALIGN_MIDDLE);
     creditsText.push_back(text);
@@ -99,13 +99,13 @@ CreditsMenu::CreditsMenu(int w, int h, const std::string & title)
     append(text);
     positionY -= 50;
 
-    text = new GuiText(tr("Design:"), fontSize, textColor);
+    text = new GuiText(tr("Port to aroma:"), fontSize, textColor);
     text->setPosition(positionX, positionY);
     text->setAlignment(ALIGN_LEFT | ALIGN_MIDDLE);
     creditsText.push_back(text);
     append(text);
 
-    text = new GuiText(tr("Some guy who doesn't want to be named."), fontSize, textColor);
+    text = new GuiText(tr("Suprapote"), fontSize, textColor);
     text->setPosition(positionX2, positionY);
     text->setAlignment(ALIGN_LEFT | ALIGN_MIDDLE);
     creditsText.push_back(text);

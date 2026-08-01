@@ -18,6 +18,7 @@
 #define GUI_TEXT_H_
 
 #include "GuiElement.h"
+#include "../common/gx2_ext.h"
 //!Forward declaration
 class FreeTypeGX;
 
@@ -68,9 +69,9 @@ public:
     //!\param c Font color
     void setColor(const glm::vec4 & c);
 
-    void setBlurGlowColor(float blurIntensity,  const glm::vec4 & c);
+    void setBlurGlowColor(f32 blurIntensity,  const glm::vec4 & c);
 
-    void setTextBlur(float blur) { defaultBlur = blur; }
+    void setTextBlur(f32 blur) { defaultBlur = blur; }
     //!Get the original text as char
     virtual const wchar_t * getText() const { return text; }
     virtual std::string toUTF8(void) const;
@@ -104,7 +105,7 @@ protected:
     static FreeTypeGX * presentFont;
     static s32 presetSize;
     static s32 presetMaxWidth;
-    static float presetInternalRenderingScale;
+    static f32 presetInternalRenderingScale;
     static s32 presetAlignment;
     static GX2ColorF32 presetColor;
 
@@ -119,7 +120,7 @@ protected:
 
     wchar_t * text;
     std::vector<wchar_t *> textDyn;
-    std::vector<uint16_t> textDynWidth;
+    std::vector<u16> textDynWidth;
     s32 wrapMode; //!< Wrapping toggle
     s32 textScrollPos; //!< Current starting index of text string for scrolling
     s32 textScrollInitialDelay; //!< Delay to wait before starting to scroll
@@ -131,11 +132,11 @@ protected:
     s32 currentSize;
     s32 linestodraw;
     glm::vec4 color;
-    float defaultBlur;
-    float blurGlowIntensity;
-    float blurAlpha;
+    f32 defaultBlur;
+    f32 blurGlowIntensity;
+    f32 blurAlpha;
     glm::vec4 blurGlowColor;
-    float internalRenderingScale;
+    f32 internalRenderingScale;
 };
 
 #endif

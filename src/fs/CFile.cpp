@@ -193,5 +193,3 @@ int CFile::fwrite(const char *format, ...)
 
     return result;
 }
-
-

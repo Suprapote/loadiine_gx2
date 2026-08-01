@@ -42,7 +42,7 @@ GuiElement::GuiElement()
 	selectable = false;
 	clickable = false;
 	holdable = false;
-	drawOverOnlyWhenSelected = false;
+	//drawOverOnlyWhenSelected = false;
 	visible = true;
 	yoffsetDyn = 0;
 	xoffsetDyn = 0;
@@ -82,7 +82,7 @@ f32 GuiElement::getLeft()
 
 	f32 x = pLeft;
 
-    //! TODO: the conversion from int to float and back to int is bad for performance, change that
+    //! TODO: the conversion from int to f32 and back to int is bad for performance, change that
 	if(alignment & ALIGN_CENTER)
 	{
 		x = pLeft + pWidth * 0.5f * pScaleX - width * 0.5f * getScaleX();
@@ -117,7 +117,7 @@ f32 GuiElement::getTop()
 
 	f32 y = pTop;
 
-    //! TODO: the conversion from int to float and back to int is bad for performance, change that
+    //! TODO: the conversion from int to f32 and back to int is bad for performance, change that
 	if(alignment & ALIGN_MIDDLE)
 	{
 		y = pTop + pHeight * 0.5f * pScaleY - getHeight() * 0.5f * getScaleY();

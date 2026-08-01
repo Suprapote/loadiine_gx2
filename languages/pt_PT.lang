@@ -14,8 +14,123 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/menu/CreditsMenu.cpp:69
+msgid "Coding:"
+msgstr "Programação:"
+
+msgid "Design:"
+msgstr "Design:"
+
+msgid "Enable DLC Support:"
+msgstr "Ativar suporte a DLC:"
+
+#, fuzzy
+msgid "Games Source"
+msgstr "Modo de guardamento"
+
+#, fuzzy
+msgid "Games source"
+msgstr "Modo de guardamento"
+
+#, fuzzy
+msgid "HID-Pad Network"
+msgstr "HID-Pad"
+
+#, fuzzy
+msgid "HID-Pad Rumble"
+msgstr "HID-Pad"
+
 msgid "Loadiine GX2"
+msgstr "Loadiine GX2"
+
+msgid "Padcon"
+msgstr "Padcon"
+
+msgid "Padcon settings"
+msgstr "Definições do Padcon"
+
+msgid "PyGecko"
+msgstr "PyGecko"
+
+msgid "PyGecko settings"
+msgstr "Definições do PyGecko"
+
+msgid "Some guy who doesn't want to be named."
+msgstr "Um gajo qualquer que não quer ser mencionado."
+
+#: src/Application.cpp:233
+msgid "Loaded language"
+msgstr ""
+
+#: src/Application.cpp:238
+msgid "Reloaded logger to change IP to settings IP"
+msgstr ""
+
+#: src/Application.cpp:242
+#, fuzzy
+msgid "Loaded HID settings"
+msgstr "Definições de HID"
+
+#: src/Application.cpp:246
+#, fuzzy
+msgid "Loaded resources"
+msgstr "Modo de guardamento"
+
+#: src/Application.cpp:250
+#, fuzzy
+msgid "Loading game list"
+msgstr "A guardar opções do jogo!"
+
+#: src/Application.cpp:253
+msgid "Loading Music"
+msgstr ""
+
+#: src/Application.cpp:269
+msgid "Initializing main"
+msgstr ""
+
+#: src/gui/MessageBox.cpp:91
+msgid "Ok"
+msgstr ""
+
+#: src/gui/MessageBox.cpp:92
+msgid "Cancel"
+msgstr ""
+
+#: src/gui/MessageBox.cpp:93
+msgid "Yes"
+msgstr ""
+
+#: src/gui/MessageBox.cpp:94
+msgid "No"
+msgstr ""
+
+#: src/language/UpdateLanguage.cpp:36 src/menu/SettingsMenu.cpp:56
+msgid "Download languages"
+msgstr ""
+
+#: src/language/UpdateLanguage.cpp:57 src/network/GameImageDownloader.cpp:55
+msgid "Connecting.."
+msgstr ""
+
+#: src/language/UpdateLanguage.cpp:62
+msgid "Getting file list"
+msgstr ""
+
+#: src/language/UpdateLanguage.cpp:115
+msgid "Languages files:"
+msgstr ""
+
+#: src/language/UpdateLanguage.cpp:121 src/network/GameImageDownloader.cpp:159
+msgid "files left."
+msgstr ""
+
+#: src/language/UpdateLanguage.cpp:135 src/network/GameImageDownloader.cpp:251
+msgid "Downloading files"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:69
+#, fuzzy
+msgid "Loadiine GX2 - Aroma"
 msgstr "Loadiine GX2"
 
 #: src/menu/CreditsMenu.cpp:76
@@ -23,16 +138,16 @@ msgid "Official Site:"
 msgstr "Site oficial:"
 
 #: src/menu/CreditsMenu.cpp:89
-msgid "Coding:"
-msgstr "Programação:"
+msgid "Original project:"
+msgstr ""
 
 #: src/menu/CreditsMenu.cpp:102
-msgid "Design:"
-msgstr "Design:"
+msgid "Port to aroma:"
+msgstr ""
 
 #: src/menu/CreditsMenu.cpp:108
-msgid "Some guy who doesn't want to be named."
-msgstr "Um gajo qualquer que não quer ser mencionado."
+msgid "Suprapote"
+msgstr ""
 
 #: src/menu/CreditsMenu.cpp:115
 msgid "Testing:"
@@ -70,32 +185,33 @@ msgstr "Marionumber1 pelo seu kernel exploit"
 msgid "The whole libwiiu team and it's contributors."
 msgstr "Toda a equipa libwiiu e aos seus contribuidores."
 
-#: src/menu/GameLauncherMenu.cpp:52
+#: src/menu/GameLauncherMenu.cpp:53
 msgid "Extra Save:"
 msgstr "Jogo guardado extra:"
 
-#: src/menu/GameLauncherMenu.cpp:53
-msgid "Enable DLC Support:"
+#: src/menu/GameLauncherMenu.cpp:54
+#, fuzzy
+msgid "Enable DLC On SD:"
 msgstr "Ativar suporte a DLC:"
 
-#: src/menu/GameLauncherMenu.cpp:76
+#: src/menu/GameLauncherMenu.cpp:77
 msgid "Update Folder"
 msgstr "Pasta update"
 
-#: src/menu/GameLauncherMenu.cpp:77
+#: src/menu/GameLauncherMenu.cpp:78
 msgid "Save Mode"
 msgstr "Modo de guardamento"
 
-#: src/menu/GameLauncherMenu.cpp:78 src/menu/SettingsMenu.cpp:75
+#: src/menu/GameLauncherMenu.cpp:79 src/menu/SettingsMenu.cpp:77
 msgid "Launch Mode"
 msgstr "Modo de carregamento"
 
-#: src/menu/GameLauncherMenu.cpp:89 src/menu/GameLauncherMenu.cpp:94
+#: src/menu/GameLauncherMenu.cpp:90 src/menu/GameLauncherMenu.cpp:95
 #, fuzzy
 msgid "<Settings Default>"
 msgstr "<Opções Predefinidas>"
 
-#: src/menu/GameLauncherMenu.cpp:492
+#: src/menu/GameLauncherMenu.cpp:493
 msgid "Saving game settings!"
 msgstr "A guardar opções do jogo!"
 
@@ -119,124 +235,140 @@ msgstr "Vista em Grade"
 msgid "Cover Carousel"
 msgstr "Carrocel de Capas"
 
-#: src/menu/SettingsMenu.cpp:52
+#: src/menu/SettingsMenu.cpp:53
 msgid "Background customizations"
 msgstr "Customizações de fundo"
 
-#: src/menu/SettingsMenu.cpp:52
+#: src/menu/SettingsMenu.cpp:53
 msgid "GUI"
 msgstr "Interface"
 
-#: src/menu/SettingsMenu.cpp:52
+#: src/menu/SettingsMenu.cpp:53
 msgid "Game View Selection"
 msgstr "Tipo de vista de jogos"
 
-#: src/menu/SettingsMenu.cpp:53
+#: src/menu/SettingsMenu.cpp:54
 msgid "Adjust log server IP and port"
 msgstr "Ajustar a porta e IP do servidor de log"
 
-#: src/menu/SettingsMenu.cpp:53
+#: src/menu/SettingsMenu.cpp:54
 msgid "Customize games path"
 msgstr "Mudar localização de jogos"
 
-#: src/menu/SettingsMenu.cpp:53
+#: src/menu/SettingsMenu.cpp:54
 msgid "Customize save path"
 msgstr "Mudar localização de jogos guardados"
 
-#: src/menu/SettingsMenu.cpp:53
+#: src/menu/SettingsMenu.cpp:54
 msgid "Loader"
 msgstr "Carregador"
 
-#: src/menu/SettingsMenu.cpp:53
+#: src/menu/SettingsMenu.cpp:54
 msgid "Set save mode"
 msgstr "Definir modo de guardamento"
 
-#: src/menu/SettingsMenu.cpp:54
+#: src/menu/SettingsMenu.cpp:55
 msgid "Game"
 msgstr "Jogo"
 
-#: src/menu/SettingsMenu.cpp:54
+#: src/menu/SettingsMenu.cpp:55
 #, fuzzy
 msgid "HID settings"
 msgstr "Definições de HID"
 
-#: src/menu/SettingsMenu.cpp:54
+#: src/menu/SettingsMenu.cpp:55
 msgid "Launch method selection"
 msgstr "Modo de carregamento"
 
-#: src/menu/SettingsMenu.cpp:54
+#: src/menu/SettingsMenu.cpp:55
 msgid "Log server control"
 msgstr "Controlo do servidor de log"
 
-#: src/menu/SettingsMenu.cpp:54
-msgid "Padcon settings"
-msgstr "Definições do Padcon"
-
-#: src/menu/SettingsMenu.cpp:54
-msgid "PyGecko settings"
-msgstr "Definições do PyGecko"
+#: src/menu/SettingsMenu.cpp:55
+msgid "Read and write memory"
+msgstr ""
 
 #: src/menu/SettingsMenu.cpp:55
+msgid "Turn off the screen Gamepad"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:56 src/menu/SettingsMenu.cpp:87
+msgid "Languages"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:56
+msgid "Select language"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:57
 msgid "Credits"
 msgstr "Créditos"
 
-#: src/menu/SettingsMenu.cpp:55
+#: src/menu/SettingsMenu.cpp:57
 msgid "Credits to all contributors"
 msgstr "Créditos a todos os contribuidores"
 
-#: src/menu/SettingsMenu.cpp:60
+#: src/menu/SettingsMenu.cpp:62
 msgid "Game View TV"
 msgstr "Vista de jogos - TV"
 
-#: src/menu/SettingsMenu.cpp:61
+#: src/menu/SettingsMenu.cpp:63
 msgid "Game View DRC"
 msgstr "Vista de jogos - DRC"
 
-#: src/menu/SettingsMenu.cpp:66
+#: src/menu/SettingsMenu.cpp:68
 msgid "Show Game Settings"
 msgstr "Mostrar definições de jogos"
 
-#: src/menu/SettingsMenu.cpp:67
+#: src/menu/SettingsMenu.cpp:69
 msgid "Host IP"
 msgstr "IP do hospedeiro"
 
-#: src/menu/SettingsMenu.cpp:68
+#: src/menu/SettingsMenu.cpp:70
 msgid "Game Path"
 msgstr "Localização de jogos"
 
-#: src/menu/SettingsMenu.cpp:69
+#: src/menu/SettingsMenu.cpp:71
 msgid "Game Save Path"
 msgstr "Localização de jogos guardados"
 
-#: src/menu/SettingsMenu.cpp:70
+#: src/menu/SettingsMenu.cpp:72
 msgid "Game Save Mode"
 msgstr "Modo de guardamento"
 
-#: src/menu/SettingsMenu.cpp:76
+#: src/menu/SettingsMenu.cpp:78
 msgid "Log Server Control"
 msgstr "Controlo do servidor de log"
 
-#: src/menu/SettingsMenu.cpp:77
-msgid "PyGecko"
-msgstr "PyGecko"
-
-#: src/menu/SettingsMenu.cpp:78
-msgid "Padcon"
-msgstr "Padcon"
-
 #: src/menu/SettingsMenu.cpp:79
-msgid "HID-Pad"
-msgstr "HID-Pad"
+#, fuzzy
+msgid "Load PyGecko"
+msgstr "PyGecko"
 
 #: src/menu/SettingsMenu.cpp:80
 #, fuzzy
-msgid "HID-Pad Rumble"
-msgstr "HID-Pad"
+msgid "Enable Padcon"
+msgstr "Padcon"
 
 #: src/menu/SettingsMenu.cpp:81
-#, fuzzy
-msgid "HID-Pad Network"
+msgid "HID-Pad"
 msgstr "HID-Pad"
+
+#: src/menu/SettingsMenu.cpp:86
+msgid "Download"
+msgstr ""
+
+#: src/network/GameImageDownloader.cpp:42
+msgid "Download 3D Covers"
+msgstr ""
+
+#: src/utils/FileReplacer.cpp:120
+msgid "Creating filelist.txt:"
+msgstr ""
+
+#: src/utils/FileReplacer.cpp:124
+msgid "entries found"
+msgstr ""
 
 #~ msgid "Art Atelier Mode"
 #~ msgstr "Modo Art Atelier"

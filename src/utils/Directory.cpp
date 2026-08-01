@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 extern "C" {
-  // Get declaration for f(int i, char c, float x)
+  // Get declaration for f(int i, char c, f32 x)
   #include "utils/logger.h" 
   #include "common/common.h"
 }

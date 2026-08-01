@@ -26,6 +26,7 @@
 #include "gui/GuiElement.h"
 #include "utils/StringTools.h"
 #include "settings/CSettings.h"
+#include "../common/gx2_ext.h"
 
 CThread * GameLauncherMenu::pThread = NULL;
 
@@ -50,7 +51,7 @@ GameLauncherMenu::GameLauncherMenu(int gameIdx)
     , titleImageData(Resources::GetImageData("settingsTitle.png"))
     , titleImage(titleImageData)
     , extraSaveText(tr("Extra Save:"), 40, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f))
-    , dlcEnableText(tr("Enable DLC Support:"), 40, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f))
+    , dlcEnableText(tr("Enable DLC On SD:"), 40, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f))
     , frameImageData(Resources::GetImageData("gameSettingsFrame.png"))
     , frameImage(frameImageData)
     , touchTrigger(GuiTrigger::CHANNEL_1, GuiTrigger::VPAD_TOUCH)
@@ -327,13 +328,13 @@ void GameLauncherMenu::OnSelectBoxShowHide(GuiSelectBox * selectBox,bool value){
 
 void GameLauncherMenu::OnSelectBoxValueChanged(GuiSelectBox * selectBox, std::string value){
     if(selectBox == &pathSelectBox){
-        DEBUG_FUNCTION_LINE("Setting update path to %s\n",value.c_str());
+        log_printf("Setting update path to %s\n",value.c_str());
         gamesettings.updateFolder = value;
     }else if(selectBox == &saveModeSelectBox){
-        DEBUG_FUNCTION_LINE("Setting savemode to %s\n",value.c_str());
+        log_printf("Setting savemode to %s\n",value.c_str());
         gamesettings.save_method = atoi(value.c_str());
     }else if(selectBox == &launchModeSelectBox){
-        DEBUG_FUNCTION_LINE("Setting launchmode to %s\n",value.c_str());
+        log_printf("Setting launchmode to %s\n",value.c_str());
         gamesettings.launch_method = atoi(value.c_str());
     }else{
         return;
@@ -390,28 +391,28 @@ void GameLauncherMenu::setHeader(const discHeader * header)
     titleText.setText(gamename.c_str());
 
     DirList updatefolder(header->gamepath + UPDATE_PATH,NULL,DirList::Dirs);
-    DEBUG_FUNCTION_LINE("Found %d update folders for %s:\n",updatefolder.GetFilecount(),header->name.c_str());
+    log_printf("Found %d update folders for %s:\n",updatefolder.GetFilecount(),header->name.c_str());
     updatePaths.clear();
 
     updatePaths[COMMON_UPDATE_PATH] = COMMON_UPDATE_PATH;
     for(int i = 0; i < updatefolder.GetFilecount(); i++)
     {
         updatePaths[updatefolder.GetFilename(i)] = updatefolder.GetFilename(i);
-        DEBUG_FUNCTION_LINE("%s\n",updatefolder.GetFilename(i));
+        log_printf("%s\n",updatefolder.GetFilename(i));
     }
 
     //gameTitle.setText(gamename.c_str());
     bool result = CSettingsGame::getInstance()->LoadGameSettings(header->id,gamesettings);
     if(result){
-        DEBUG_FUNCTION_LINE("Found ");
+        log_printf("Found ");
     }
 
-    DEBUG_FUNCTION_LINE("Game Setting for: %s\n\n",header->id.c_str());
-    DEBUG_FUNCTION_LINE("Update Folder: \"%s\"\n",gamesettings.updateFolder.c_str());
-    DEBUG_FUNCTION_LINE("Extra Save: %d\n",gamesettings.extraSave);
-    DEBUG_FUNCTION_LINE("Launch Method: %d\n",gamesettings.launch_method);
-    DEBUG_FUNCTION_LINE("Save Method: %d\n",gamesettings.save_method);
-    DEBUG_FUNCTION_LINE("--------\n");
+    log_printf("Game Setting for: %s\n\n",header->id.c_str());
+    log_printf("Update Folder: \"%s\"\n",gamesettings.updateFolder.c_str());
+    log_printf("Extra Save: %d\n",gamesettings.extraSave);
+    log_printf("Launch Method: %d\n",gamesettings.launch_method);
+    log_printf("Save Method: %d\n",gamesettings.save_method);
+    log_printf("--------\n");
 
     //getting selected Items for selectboxes
     std::map<std::string, std::string>::iterator itr;
@@ -489,7 +490,7 @@ void GameLauncherMenu::OnOKButtonClick(GuiButton *button, const GuiController *c
 {
     CSettings::setValueAsU16(CSettings::GameStartIndex,gameIdx);
     gameLauncherMenuFrame.setState(STATE_DISABLED);
-    progresswindow.setTitle(tr("Saving game settings!"));
+    progresswindow.setInfo(tr("Saving game settings!"));
     progresswindow.setProgress(0.0f);
     progresswindow.setVisible(true);
     bringToFront(&progresswindow);

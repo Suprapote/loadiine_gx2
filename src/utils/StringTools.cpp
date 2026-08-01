@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <wchar.h>
-#include <gctypes.h>
+#include <wut_types.h>
 
 const char * fmt(const char * format, ...)
 {

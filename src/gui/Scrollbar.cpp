@@ -23,6 +23,7 @@
  ***************************************************************************/
 #include "Scrollbar.h"
 #include "resources/Resources.h"
+#include "utils/utils.h"
 
 Scrollbar::Scrollbar(s32 h)
     : touchTrigger(GuiTrigger::CHANNEL_1, GuiTrigger::VPAD_TOUCH)
@@ -176,7 +177,7 @@ void Scrollbar::OnBoxButtonHold(GuiButton *button, const GuiController *controll
 
 	s32 positionWiimote = LIMIT(y - MinHeight, 0, MaxHeight - MinHeight);
 
-	s32 newSelected = (EntrieCount - 1) - (s32) ((float) positionWiimote / (float) (MaxHeight-MinHeight) * (float) (EntrieCount-1));
+	s32 newSelected = (EntrieCount - 1) - (s32) ((f32) positionWiimote / (f32) (MaxHeight-MinHeight) * (f32) (EntrieCount-1));
 
     s32 diff = newSelected-SelInd-SelItem;
 

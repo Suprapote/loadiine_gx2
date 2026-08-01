@@ -16,7 +16,6 @@
  ****************************************************************************/
 #include "GuiSound.h"
 #include "sounds/SoundHandler.hpp"
-#include "dynamic_libs/os_functions.h"
 
 GuiSound::GuiSound(const char * filepath)
 {
@@ -126,7 +125,7 @@ void GuiSound::Stop()
             v->setState(Voice::STATE_STOP);
 
         while(v->getState() != Voice::STATE_STOPPED)
-            os_usleep(1000);
+            usleep(1000);
     }
 
     SoundDecoder * decoder = SoundHandler::instance()->getDecoder(voice);

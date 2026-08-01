@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include <whb/log.h>
+#include <whb/log_udp.h>
 #include <string.h>
 
 #define __FILENAME_X__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)

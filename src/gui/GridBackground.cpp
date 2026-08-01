@@ -1,6 +1,7 @@
 #include "GridBackground.h"
 #include "video/CVideo.h"
 #include "video/shaders/Shader3D.h"
+#include "utils/utils.h"
 
 static const float bgRepeat = 1000.0f;
 static const float bgTexRotate = 39.0f;
@@ -20,12 +21,12 @@ GridBackground::GridBackground(GuiImageData *img)
 
     if(m_posVtxs)
     {
-        s32 i = 0;
+        int i = 0;
         m_posVtxs[i++] = -1.0f; m_posVtxs[i++] = 0.0f; m_posVtxs[i++] = 1.0f;
         m_posVtxs[i++] =  1.0f; m_posVtxs[i++] = 0.0f; m_posVtxs[i++] = 1.0f;
         m_posVtxs[i++] =  1.0f; m_posVtxs[i++] = 0.0f; m_posVtxs[i++] = -1.0f;
         m_posVtxs[i++] = -1.0f; m_posVtxs[i++] = 0.0f; m_posVtxs[i++] = -1.0f;
-        GX2Invalidate(GX2_INVALIDATE_CPU_ATTRIB_BUFFER, m_posVtxs, vtxCount * Shader3D::cuVertexAttrSize);
+        GX2Invalidate(GX2_INVALIDATE_MODE_CPU_ATTRIBUTE_BUFFER, m_posVtxs, vtxCount * Shader3D::cuVertexAttrSize);
     }
 
     if(m_texCoords)
@@ -44,13 +45,13 @@ GridBackground::GridBackground(GuiImageData *img)
             sinRot, cosRot
         });
 
-        for(s32 i = 0; i < 4; i++)  {
+        for(int i = 0; i < 4; i++)  {
             texCoordVec[i] = texRotateMtx * texCoordVec[i];
             m_texCoords[i*2 + 0] = texCoordVec[i][0];
             m_texCoords[i*2 + 1] = texCoordVec[i][1];
         }
 
-        GX2Invalidate(GX2_INVALIDATE_CPU_ATTRIB_BUFFER, m_texCoords, vtxCount * Shader3D::cuTexCoordAttrSize);
+        GX2Invalidate(GX2_INVALIDATE_MODE_CPU_ATTRIBUTE_BUFFER, m_texCoords, vtxCount * Shader3D::cuTexCoordAttrSize);
     }
 
     //! assign to internal variables which are const but oh well
@@ -96,5 +97,5 @@ void GridBackground::draw(CVideo *pVideo, const glm::mat4 & modelView)
     Shader3D::instance()->setAlphaFadeOut(alphaFadeOut);
     Shader3D::instance()->setColorIntensity(colorIntensity);
     Shader3D::instance()->setAttributeBuffer(vtxCount, posVtxs, texCoords);
-    Shader3D::instance()->draw(GX2_PRIMITIVE_QUADS, vtxCount);
+    Shader3D::instance()->draw(GX2_PRIMITIVE_MODE_QUADS, vtxCount);
 }

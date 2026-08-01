@@ -17,7 +17,8 @@
 #include <malloc.h>
 #include <string.h>
 #include "FileDownloader.h"
-#include "dynamic_libs/curl_functions.h"
+#include <curl/curl.h>
+#include <curl/easy.h>
 #include "utils/logger.h"
 
 
@@ -56,7 +57,7 @@ bool FileDownloader::getFile(const std::string & downloadUrl, const std::string 
     if(!private_data.file->isOpen())
     {
         delete private_data.file;
-        DEBUG_FUNCTION_LINE("Can not write to file %s\n", outputPath.c_str());
+        log_printf("Can not write to file %s\n", outputPath.c_str());
         return false;
     }
 
@@ -70,46 +71,46 @@ bool FileDownloader::getFile(const std::string & downloadUrl, const std::string 
 
 bool FileDownloader::internalGetFile(const std::string & downloadUrl, curl_private_data_t * private_data)
 {
-    CURL * curl = n_curl_easy_init();
+    CURL * curl = curl_easy_init();
     if(!curl)
         return false;
 
-    n_curl_easy_setopt(curl, CURLOPT_URL, downloadUrl.c_str());
-    n_curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, FileDownloader::curlCallback);
-    n_curl_easy_setopt(curl, CURLOPT_WRITEDATA, private_data);
-    //n_curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
+    curl_easy_setopt(curl, CURLOPT_URL, downloadUrl.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, FileDownloader::curlCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, private_data);
+    //curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
 
     if(private_data->progressCallback)
     {
-        n_curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, FileDownloader::curlProgressCallback);
-        n_curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, private_data);
+        curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, FileDownloader::curlProgressCallback);
+        curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, private_data);
     }
 
-    int ret = n_curl_easy_perform(curl);
+    int ret = curl_easy_perform(curl);
     if(ret)
     {
-        DEBUG_FUNCTION_LINE("n_curl_easy_perform ret %i\n", ret);
-        n_curl_easy_cleanup(curl);
+        log_printf("curl_easy_perform ret %i\n", ret);
+        curl_easy_cleanup(curl);
         return false;
     }
 
     if(!private_data->filesize) {
-        DEBUG_FUNCTION_LINE("file length is 0");
-        n_curl_easy_cleanup(curl);
+        log_printf("file length is 0");
+        curl_easy_cleanup(curl);
         return false;
     }
 
     int resp = 404;
-    n_curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &resp);
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &resp);
 
     if(resp != 200)
     {
-        DEBUG_FUNCTION_LINE("response != 200");
-        n_curl_easy_cleanup(curl);
+        log_printf("response != 200");
+        curl_easy_cleanup(curl);
         return false;
     }
 
-    n_curl_easy_cleanup(curl);
+    curl_easy_cleanup(curl);
     return true;
 }
 

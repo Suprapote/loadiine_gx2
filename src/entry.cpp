@@ -1,79 +1,68 @@
 #include <string.h>
-#include "dynamic_libs/os_functions.h"
-#include "dynamic_libs/sys_functions.h"
-#include "dynamic_libs/socket_functions.h"
-#include "dynamic_libs/aoc_functions.h"
-#include "dynamic_libs/gx2_functions.h"
-#include "dynamic_libs/syshid_functions.h"
-#include "fs/sd_fat_devoptab.h"
+#include "common/gx2_ext.h"
+
 #include "utils/function_patcher.h"
-#include "controller_patcher/ControllerPatcher.hpp"
-#include "patcher/cpp_to_c_util.h"
-#include "patcher/pygecko.h"
 #include "common/common.h"
 #include "common/retain_vars.h"
 #include "utils/utils.h"
 #include "utils/logger.h"
 #include "video/CursorDrawer.h"
 #include "main.h"
+#include <sys/socket.h>
+#include <padscore/kpad.h>
 
 
-extern "C" int __entry_menu(int argc, char **argv)
+extern "C" int main(int argc, char **argv)
 {
-    //! Launch PyGecko if requested
-    if (GAME_LAUNCHED && gSettingLaunchPyGecko)
-    {
-        start_pygecko();
-    }
-    InitOSFunctionPointers();
-    InitSocketFunctionPointers();
-    InitAocFunctionPointers();
-    InitACPFunctionPointers();
-    InitFSFunctionPointers();
+    //! *********************************************************************
+	//! *                        Initialize Kpad                            *
+	//! *********************************************************************
+	KPADInit();
+	WPADEnableURCC(1);
 
     log_init();
 
     //!*******************************************************************
     //!                        Initialize HID Config                     *
     //!*******************************************************************
-    mount_sd_fat("sd");
-    ControllerPatcher::Init(CONTROLLER_PATCHER_PATH);
-    unmount_sd_fat("sd");
-    ControllerPatcher::disableControllerMapping();
-    if(gHIDPADNetwork){ ControllerPatcher::startNetworkServer(); }
-    ControllerPatcher::setRumbleActivated(gHIDPADRumble);
+    //mount_sd_fat("sd");
+    //ControllerPatcher::Init(CONTROLLER_PATCHER_PATH);
+    //unmount_sd_fat("sd");
+   // ControllerPatcher::disableControllerMapping();
+    //if(gHIDPADNetwork){ ControllerPatcher::startNetworkServer(); }
+    //ControllerPatcher::setRumbleActivated(gHIDPADRumble);
 
     //!*******************************************************************
     //!                        Dynamic Patching                          *
     //!*******************************************************************
 
     if(GAME_LAUNCHED){
-         ApplyPatches();
+         //ApplyPatches();
     }
 
     //! *******************************************************************
     //! *              Check if our application is started                *
     //! *******************************************************************
-    if (OSGetTitleID != 0 &&
+    /*if (OSGetTitleID != 0 &&
         OSGetTitleID() != 0x000500101004A200 && // mii maker eur
         OSGetTitleID() != 0x000500101004A100 && // mii maker usa
         OSGetTitleID() != 0x000500101004A000 && // mii maker jpn
         OSGetTitleID() != 0x0005000013374842)   // hbl channel
     {
-        return EXIT_RELAUNCH_ON_LOAD;
-    }
+        return 0;
+    }*/
 
     //!*******************************************************************
     //!                       Check game launch                          *
     //!*******************************************************************
     // check if game is launched, if yes continue coreinit process
-    if ((GAME_LAUNCHED == 1) && (LOADIINE_MODE == LOADIINE_MODE_MII_MAKER))
-        return EXIT_RELAUNCH_ON_LOAD;
+    if (GAME_LAUNCHED == 1) //&& (LOADIINE_MODE == LOADIINE_MODE_MII_MAKER))
+        return 0;
 
     //! *******************************************************************
     //! *                     Setup EABI registers                        *
     //! *******************************************************************
-    register int old_sdata_start, old_sdata2_start;
+    /*register int old_sdata_start, old_sdata2_start;
     asm volatile(
         "mr %0, 13\n"
         "mr %1, 2\n"
@@ -82,12 +71,12 @@ extern "C" int __entry_menu(int argc, char **argv)
         "lis 13, __sdata_start@h\n"
         "ori 13, 13, __sdata_start@l\n"// # Set the Small Data (Read\Write) base register.
         : "=r" (old_sdata_start), "=r" (old_sdata2_start)
-    );
+    );*/
 
     //!*******************************************************************
     //!                    Initialize BSS sections                       *
     //!*******************************************************************
-    asm volatile(
+    /*asm volatile(
         "lis 3, __bss_start@h\n"
         "ori 3, 3,__bss_start@l\n"
         "lis 5, __bss_end@h\n"
@@ -95,7 +84,7 @@ extern "C" int __entry_menu(int argc, char **argv)
         "subf 5, 3, 5\n"
         "li 4, 0\n"
         "bl memset\n"
-    );
+    );*/
 
     //! *******************************************************************
     //! *                        Call our Main                            *
@@ -105,51 +94,26 @@ extern "C" int __entry_menu(int argc, char **argv)
     //! *******************************************************************
     //! *                    Restore EABI registers                       *
     //! *******************************************************************
-    asm volatile("mr 13, %0" : : "r" (old_sdata_start));
-    asm volatile("mr 2,  %0" : : "r" (old_sdata2_start));
+    /*asm volatile("mr 13, %0" : : "r" (old_sdata_start));
+    asm volatile("mr 2,  %0" : : "r" (old_sdata2_start));*/
 
     if(GAME_LAUNCHED)
     {
-        if (LOADIINE_MODE == LOADIINE_MODE_SMASH_BROS)
-        {
-            if(SYSCheckTitleExists(0x0005000010145000)) { // EUR
-                SYSLaunchTitle(0x0005000010145000);
-            }
-            else if(SYSCheckTitleExists(0x0005000010144F00)) { // USA
-                SYSLaunchTitle(0x0005000010144F00);
-            }
-            else if(SYSCheckTitleExists(0x0005000010110E00)) { // JAP
-                SYSLaunchTitle(0x0005000010110E00);
-            }
-            else {
-                // Launch smash bros disk without exiting to menu
-                char buf_vol_odd[20];
-                strcpy(buf_vol_odd, "/vol/storage_odd03");
-                _SYSLaunchTitleByPathFromLauncher(buf_vol_odd, 18, 0);
-            }
-        }
-        else if(LOADIINE_MODE == LOADIINE_MODE_MII_MAKER)
-        {
-            // Restart mii maker
-            SYSRelaunchTitle(0, 0);
-            __Exit();
-        }
+
         //! TODO: add auto launch with SYSLaunchTitle for Karaoke and Art Atelier Modes
 
         //! *******************************************************************
         //! *                 Jump to original application                    *
         //! *******************************************************************
-        return EXIT_RELAUNCH_ON_LOAD;
+        return 0;
     }
 
-    RestoreAllInstructions();
+    //RestoreAllInstructions();
 
     CursorDrawer::destroyInstance();
-    ControllerPatcher::DeInit();
-    ControllerPatcher::stopNetworkServer();
 
     //! *******************************************************************
     //! *                 Jump to homebrew launcher                       *
     //! *******************************************************************
-    return EXIT_SUCCESS;
+    return 0;
 }

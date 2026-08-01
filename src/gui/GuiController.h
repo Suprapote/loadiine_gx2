@@ -18,6 +18,8 @@
 #define GUI_CONTROLLER_H_
 
 #include <string.h>
+#include <padscore/kpad.h>
+#include <vpad/input.h>
 #include "GuiTrigger.h"
 
 class GuiController
@@ -34,19 +36,19 @@ public:
         {
         default:
         case GuiTrigger::CHANNEL_1:
-            chanIdx = 0;
+            vpadChanIdx = VPAD_CHAN_0;
             break;
         case GuiTrigger::CHANNEL_2:
-            chanIdx = 1;
+            wpadChanIdx = WPAD_CHAN_0;
             break;
         case GuiTrigger::CHANNEL_3:
-            chanIdx = 2;
+            wpadChanIdx = WPAD_CHAN_1;
             break;
         case GuiTrigger::CHANNEL_4:
-            chanIdx = 3;
+            wpadChanIdx = WPAD_CHAN_2;
             break;
         case GuiTrigger::CHANNEL_5:
-            chanIdx = 4;
+            wpadChanIdx = WPAD_CHAN_3;
             break;
         }
     }
@@ -63,13 +65,14 @@ public:
         u32 buttons_r;
         bool validPointer;
         bool touched;
-        float pointerAngle;
+        f32 pointerAngle;
         s32 x;
         s32 y;
     } PadData;
 
     s32 chan;
-    s32 chanIdx;
+    VPADChan vpadChanIdx;
+    WPADChan wpadChanIdx;
     PadData data;
     PadData lastData;
 

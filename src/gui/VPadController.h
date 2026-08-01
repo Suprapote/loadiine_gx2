@@ -17,14 +17,14 @@
 #ifndef VPAD_CONTROLLER_H_
 #define VPAD_CONTROLLER_H_
 
+#include <vpad/input.h>
 #include "GuiController.h"
-#include "dynamic_libs/vpad_functions.h"
 
 class VPadController : public GuiController
 {
 public:
     //!Constructor
-    VPadController(s32 channel)
+    VPadController(int channel)
         : GuiController(channel)
     {
         memset(&vpad, 0, sizeof(vpad));
@@ -33,34 +33,31 @@ public:
     //!Destructor
     virtual ~VPadController()  {}
 
-    bool update(s32 width, s32 height)
+    bool update(int width, int height)
     {
         lastData = data;
 
-        s32 vpadError = -1;
-        VPADRead(0, &vpad, 1, &vpadError);
+        VPADReadError vpadError = VPAD_READ_NO_SAMPLES;
+        VPADChan channel = VPAD_CHAN_0;
+        VPADRead(channel, &vpad, 1, &vpadError);
 
-        if(vpadError == 0){
-            data.buttons_r = vpad.btns_r;
-            data.buttons_h = vpad.btns_h;
-            data.buttons_d = vpad.btns_d;
-            data.validPointer = !vpad.tpdata.invalid;
-            data.touched = vpad.tpdata.touched;
-
-            VPADGetTPCalibratedPoint(0, &tpCalib, &vpad.tpdata1);
-
+        if(vpadError == VPAD_READ_SUCCESS)
+        {
+            data.buttons_r = vpad.release;
+            data.buttons_h = vpad.hold;
+            data.buttons_d = vpad.trigger;
+            data.validPointer = !vpad.tpNormal.validity;
+            data.touched = vpad.tpNormal.touched;
             //! calculate the screen offsets
-            data.x = -(width >> 1) + (s32)(((float)tpCalib.x / 1280.0f) * (float)width);
-            data.y = -(height >> 1) + (s32)(float)height - (((float)tpCalib.y / 720.0f) * (float)height);
-
+            data.x = -(width >> 1) + (int)((vpad.tpFiltered1.x * width) >> 12);
+            data.y = (height >> 1) - (int)(height - ((vpad.tpFiltered1.y * height) >> 12));
             return true;
         }
         return false;
     }
 
 private:
-    VPADData vpad;
-    VPADTPData tpCalib;
+    VPADStatus vpad;
 };
 
 #endif

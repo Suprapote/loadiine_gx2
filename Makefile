@@ -9,18 +9,19 @@ endif
 ifeq ($(strip $(DEVKITPRO)),)
 $(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>devkitPRO")
 endif
-export PATH			:=	$(DEVKITPPC)/bin:$(PORTLIBS)/bin:$(PATH)
-export LIBOGC_INC	:=	$(DEVKITPRO)/libogc/include
-export LIBOGC_LIB	:=	$(DEVKITPRO)/libogc/lib/wii
-export PORTLIBS		:=	$(DEVKITPRO)/portlibs/ppc
 
-PREFIX	:=	powerpc-eabi-
+TOPDIR ?= $(CURDIR)
 
-export AS	:=	$(PREFIX)as
-export CC	:=	$(PREFIX)gcc
-export CXX	:=	$(PREFIX)g++
-export AR	:=	$(PREFIX)ar
-export OBJCOPY	:=	$(PREFIX)objcopy
+#-------------------------------------------------------------------------------
+# APP_NAME sets the long name of the application
+# APP_SHORTNAME sets the short name of the application
+# APP_AUTHOR sets the author of the application
+#-------------------------------------------------------------------------------
+APP_NAME		:= Loadiine GX2
+APP_SHORTNAME	:= Loadiine GX2
+APP_AUTHOR		:= Suprapote
+
+include $(DEVKITPRO)/wut/share/wut_rules
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
@@ -33,60 +34,53 @@ BUILD		:=	build
 BUILD_DBG	:=	$(TARGET)_dbg
 SOURCES		:=	src \
 				src/common \
-				src/dynamic_libs \
 				src/fs \
 				src/game \
 				src/gui \
-				src/kernel \
 				src/language \
-				src/loader \
 				src/menu \
 				src/network \
-				src/patcher \
 				src/resources \
 				src/settings \
 				src/sounds \
 				src/system \
 				src/utils \
 				src/video \
-				src/video/shaders \
-				src/controller_patcher \
-				src/controller_patcher/config \
-				src/controller_patcher/network \
-				src/controller_patcher/patcher \
-				src/controller_patcher/utils
+				src/video/shaders
 DATA		:=	data \
 				data/images \
 				data/fonts \
 				data/sounds
 
-INCLUDES	:=  src
+INCLUDES		:= src
+CONTENT			:= 
+ICON			:= meta/icon.png
+TV_SPLASH		:= meta/tv-splash.png
+DRC_SPLASH		:= meta/drc-splash.png
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-CFLAGS	:=  -std=gnu11 -mrvl -mcpu=750 -meabi -mhard-float -ffast-math \
-		    -O3 -Wall -Wextra -Wno-unused-parameter -Wno-strict-aliasing $(INCLUDE)
-CXXFLAGS := -std=gnu++11 -mrvl -mcpu=750 -meabi -mhard-float -ffast-math \
-		    -O3 -Wall -Wextra -Wno-unused-parameter -D_GNU_SOURCE -Wno-strict-aliasing $(INCLUDE)
-ASFLAGS	:= -mregnames
-LDFLAGS	:= -nostartfiles -Wl,-Map,$(notdir $@).map,-wrap,malloc,-wrap,free,-wrap,memalign,-wrap,calloc,-wrap,realloc,-wrap,malloc_usable_size,-wrap,_malloc_r,-wrap,_free_r,-wrap,_realloc_r,-wrap,_calloc_r,-wrap,_memalign_r,-wrap,_malloc_usable_size_r,-wrap,valloc,-wrap,_valloc_r,-wrap,_pvalloc_r,--gc-sections
+CFLAGS	:=	-Wall -O2 -ffunction-sections \
+			$(MACHDEP)
 
-#---------------------------------------------------------------------------------
-Q := @
-MAKEFLAGS += --no-print-directory
+CFLAGS	+=	$(INCLUDE) -D__WIIU__ -D__WUT__
+
+CXXFLAGS	:= $(CFLAGS) -std=gnu++20
+
+ASFLAGS	:=	$(ARCH)
+LDFLAGS	=	$(ARCH) $(RPXSPECS) -Wl,-Map,$(notdir $*.map)
+
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:= -lgcc -lgd -lpng -ljpeg -lz -lfreetype -lmad -lvorbisidec
+LIBS := -lgd -lpng -ljpeg -lz -lfreetype -lbrotlidec -lbrotlicommon -lbz2 -lmad -lvorbisidec -logg -lcurl -lmbedtls -lmbedcrypto -lmbedx509 -lwut
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:=	$(CURDIR)	\
-			$(DEVKITPPC)/lib  \
-			$(DEVKITPPC)/lib/gcc/powerpc-eabi/4.8.2
+LIBDIRS	:=	$(PORTLIBS) $(WUT_ROOT)
 
 
 #---------------------------------------------------------------------------------
@@ -96,65 +90,108 @@ LIBDIRS	:=	$(CURDIR)	\
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
 export PROJECTDIR := $(CURDIR)
-export OUTPUT	:=	$(CURDIR)/$(TARGETDIR)/$(TARGET)
+export OUTPUT	:=	$(CURDIR)/$(TARGET)
+export TOPDIR	:=	$(CURDIR)
+
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
-					$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+			$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
 #---------------------------------------------------------------------------------
 # automatically build a list of object files for our project
 #---------------------------------------------------------------------------------
-FILELIST		:=	$(shell bash ./filelist.sh)
-GIT_REV			:=	$(shell bash ./gitrev.sh)
-LANGUAGES	    :=	$(shell bash ./updatelang.sh)
-export CFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
-export CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
-export HFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.h)))
-sFILES			:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-SFILES			:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.S)))
-BINFILES		:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
-TTFFILES		:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.ttf)))
-PNGFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.png)))
+FILELIST	:=	$(shell bash ./filelist.sh)
+GIT_REV		:=	$(shell bash ./gitrev.sh)
+LANGUAGES	:=	$(shell bash ./updatelang.sh)
+CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
+HFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.h)))
+BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+TTFFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.ttf)))
+PNGFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.png)))
 
 #---------------------------------------------------------------------------------
 # use CXX for linking C++ projects, CC for standard C
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(CPPFILES)),)
+#-------------------------------------------------------------------------------
 	export LD	:=	$(CC)
+#-------------------------------------------------------------------------------
 else
+#-------------------------------------------------------------------------------
 	export LD	:=	$(CXX)
+#-------------------------------------------------------------------------------
 endif
-
-export OFILES	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) \
+#-------------------------------------------------------------------------------
+export OFILES 	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) \
 					$(sFILES:.s=.o) $(SFILES:.S=.o) \
-					$(PNGFILES:.png=.png.o) $(addsuffix .o,$(BINFILES))
+					$(PNGFILES:.png=.png.o) $(TTFFILES:.ttf=.ttf.o) \
+					$(MP3FILES:.mp3=.mp3.o) $(OGGFILES:.ogg=.ogg.o) \
+					$(addsuffix .o,$(BINFILES))
+export HFILES_BIN	:=	$(addsuffix .h,$(subst .,_,$(BINFILES)))
 
-#---------------------------------------------------------------------------------
-# build a list of include paths
-#---------------------------------------------------------------------------------
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-					-I$(CURDIR)/$(BUILD) -I$(LIBOGC_INC) \
-					-I$(PORTLIBS)/include -I$(PORTLIBS)/include/freetype2
+					-I$(CURDIR)/$(BUILD) -I$(PORTLIBS)/include \
+					-I$(PORTLIBS_PATH)/ppc/include/freetype2
 
-#---------------------------------------------------------------------------------
-# build a list of library paths
-#---------------------------------------------------------------------------------
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
-					-L$(LIBOGC_LIB) -L$(PORTLIBS)/lib
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+export OFILES_BIN	:=	$(addsuffix .o,$(BINFILES))
+export OFILES_SRC	:=	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
+export OFILES 	:=	$(OFILES_BIN) $(OFILES_SRC)
+export HFILES_BIN	:=	$(addsuffix .h,$(subst .,_,$(BINFILES)))
+
+export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
+			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+			-I$(CURDIR)/$(BUILD) -I$(PORTLIBS_PATH)/ppc/include/freetype2
+
+export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+
+ifneq (,$(strip $(CONTENT)))
+	export APP_CONTENT := $(TOPDIR)/$(CONTENT)
+endif
+
+ifneq (,$(strip $(ICON)))
+	export APP_ICON := $(TOPDIR)/$(ICON)
+else ifneq (,$(wildcard $(TOPDIR)/$(TARGET).png))
+	export APP_ICON := $(TOPDIR)/$(TARGET).png
+else ifneq (,$(wildcard $(TOPDIR)/icon.png))
+	export APP_ICON := $(TOPDIR)/icon.png
+endif
+
+ifneq (,$(strip $(TV_SPLASH)))
+	export APP_TV_SPLASH := $(TOPDIR)/$(TV_SPLASH)
+else ifneq (,$(wildcard $(TOPDIR)/tv-splash.png))
+	export APP_TV_SPLASH := $(TOPDIR)/tv-splash.png
+else ifneq (,$(wildcard $(TOPDIR)/splash.png))
+	export APP_TV_SPLASH := $(TOPDIR)/splash.png
+endif
+
+ifneq (,$(strip $(DRC_SPLASH)))
+	export APP_DRC_SPLASH := $(TOPDIR)/$(DRC_SPLASH)
+else ifneq (,$(wildcard $(TOPDIR)/drc-splash.png))
+	export APP_DRC_SPLASH := $(TOPDIR)/drc-splash.png
+else ifneq (,$(wildcard $(TOPDIR)/splash.png))
+	export APP_DRC_SPLASH := $(TOPDIR)/splash.png
+endif
 
 export OUTPUT		:=	$(CURDIR)/$(TARGET)
-.PHONY: $(BUILD) clean install lang
+.PHONY: $(BUILD) clean all lang
 
-#---------------------------------------------------------------------------------
+all: $(BUILD)
+
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
-#---------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -fr $(BUILD) $(OUTPUT).elf $(OUTPUT).bin $(BUILD_DBG).elf
+	@rm -fr $(BUILD) $(TARGET).wuhb $(TARGET).rpx $(TARGET).elf
+
+#-------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------
 lang:
@@ -169,7 +206,13 @@ DEPENDS	:=	$(OFILES:.o=.d)
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-$(OUTPUT).elf:  $(OFILES)
+all	:	$(OUTPUT).wuhb
+
+$(OUTPUT).wuhb	:	$(OUTPUT).rpx
+$(OUTPUT).rpx	:	$(OUTPUT).elf
+$(OUTPUT).elf	:	$(OFILES)
+
+$(OFILES_SRC)	: $(HFILES_BIN)
 
 #---------------------------------------------------------------------------------
 # Translation files
@@ -177,73 +220,42 @@ $(OUTPUT).elf:  $(OFILES)
 translations: $(wildcard $(PROJECTDIR)/languages/*.lang)
 
 #---------------------------------------------------------------------------------
-# This rule links in binary data with the .jpg extension
-#---------------------------------------------------------------------------------
-%.elf: link.ld $(OFILES)
-	@echo "linking ... $(TARGET).elf"
-	$(Q)$(LD) -n -T $^ $(LDFLAGS) -o ../$(BUILD_DBG).elf  $(LIBPATHS) $(LIBS)
-	$(Q)$(OBJCOPY) -S -R .comment -R .gnu.attributes ../$(BUILD_DBG).elf $@
-
-#---------------------------------------------------------------------------------
-%.a:
-#---------------------------------------------------------------------------------
-	@echo $(notdir $@)
-	@rm -f $@
-	@$(AR) -rc $@ $^
-
-#---------------------------------------------------------------------------------
-%.o: %.cpp
+%.png.o	%_png.h :	%.png
 	@echo $(notdir $<)
-	@$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) -c $< -o $@ $(ERROR_FILTER)
+	@$(bin2o)
 
 #---------------------------------------------------------------------------------
-%.o: %.c
+%.jpg.o	%_jpg.h :	%.jpg
 	@echo $(notdir $<)
-	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) -c $< -o $@ $(ERROR_FILTER)
+	@$(bin2o)
 
 #---------------------------------------------------------------------------------
-%.o: %.S
+%.ttf.o	%_ttf.h :	%.ttf
 	@echo $(notdir $<)
-	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d -x assembler-with-cpp $(ASFLAGS) -c $< -o $@ $(ERROR_FILTER)
+	@$(bin2o)	
 
 #---------------------------------------------------------------------------------
-%.png.o : %.png
+%.bin.o	%_bin.h :	%.bin
 	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
-
-#---------------------------------------------------------------------------------
-%.jpg.o : %.jpg
-	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
-
-#---------------------------------------------------------------------------------
-%.ttf.o : %.ttf
-	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
-
-#---------------------------------------------------------------------------------
-%.bin.o : %.bin
-	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
+	@$(bin2o)
 
 #---------------------------------------------------------------------------------
 %.wav.o : %.wav
 	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
+	@$(bin2o)
 
 #---------------------------------------------------------------------------------
-%.mp3.o : %.mp3
+%.mp3.o	%_mp3.h :	%.mp3
 	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
+	@$(bin2o)	
 
 #---------------------------------------------------------------------------------
-%.ogg.o : %.ogg
+%.ogg.o	%_ogg.h :	%.ogg
 	@echo $(notdir $<)
-	@bin2s -a 32 $< | $(AS) -o $(@)
+	@$(bin2o)	
 
 
 #---------------------------------------------------------------------------------
-export PATH		:=	$(PROJECTDIR)/gettext-bin:$(PATH)
 
 %.pot: $(CFILES) $(CPPFILES) $(HFILES)
 	@echo Updating language files ...

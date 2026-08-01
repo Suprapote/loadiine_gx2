@@ -25,7 +25,6 @@
  ***************************************************************************/
 #include <unistd.h>
 #include <malloc.h>
-#include "dynamic_libs/os_functions.h"
 #include "OggDecoder.hpp"
 
 static int ogg_read(void * punt, int bytes, int blocks, int *f)
@@ -82,7 +81,7 @@ OggDecoder::~OggDecoder()
 {
 	ExitRequested = true;
 	while(Decoding)
-		os_usleep(100);
+		usleep(100);
 
 	if(file_fd)
 		ov_clear(&ogg_file);

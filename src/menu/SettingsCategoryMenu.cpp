@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 #include "SettingsCategoryMenu.h"
+#include "SettingsLanguageMenu.h"
 #include "Application.h"
 #include "settings/CSettings.h"
 #include "utils/StringTools.h"
@@ -24,17 +25,18 @@
 
 #define MAX_SETTINGS_PER_PAGE 3
 
-SettingsCategoryMenu::SettingsCategoryMenu(int w, int h, const std::string & title, const SettingType * catSettings, int settingsCount)
+SettingsCategoryMenu::SettingsCategoryMenu(int w, int h, const std::string & title, const char *nameTitleImage, const SettingType * catSettings, int settingsCount)
     : GuiFrame(w, h)
     , categorySettings(catSettings)
     , categorySettingsCount(settingsCount)
+    , categoryNameTitle(nameTitleImage)
     , categoryFrame(w, h)
     , scrollbar(h - 150)
     , buttonClickSound(Resources::GetSound("settings_click_2.mp3"))
     , backImageData(Resources::GetImageData("backButton.png"))
     , backImage(backImageData)
     , backButton(backImage.getWidth(), backImage.getHeight())
-    , titleImageData(Resources::GetImageData("settingsTitle.png"))
+    , titleImageData(Resources::GetImageData(categoryNameTitle))
     , titleImage(titleImageData)
     , settingImageData(Resources::GetImageData("settingButton.png"))
     , settingSelectedImageData(Resources::GetImageData("settingSelectedButton.png"))
@@ -72,14 +74,20 @@ SettingsCategoryMenu::SettingsCategoryMenu(int w, int h, const std::string & tit
     for(int i = 0; i < categorySettingsCount; i++)
     {
         settings[i].settingImage = new GuiImage(settingImageData);
+        settings[i].settingIcon = new GuiImage(Resources::GetImageData(categorySettings[i].icon));
+		settings[i].settingIconOver = new GuiImage(Resources::GetImageData(categorySettings[i].iconGlow));
         settings[i].settingImageSelected = new GuiImage(settingSelectedImageData);
         settings[i].settingButton = new GuiButton(settingImageData->getWidth(), settingImageData->getHeight());
         settings[i].settingLabel = new GuiText(tr(categorySettings[i].name), 46, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
 
-        settings[i].settingButton->setIconOver(settings[i].settingImageSelected);
-        settings[i].settingButton->setImage(settings[i].settingImage);
+        settings[i].settingButton->setImageSelectOver(settings[i].settingImageSelected);
+		settings[i].settingButton->setIcon(settings[i].settingIcon);
+		settings[i].settingButton->setIconOver(settings[i].settingIconOver);
+		settings[i].settingButton->setImage(settings[i].settingImage);
         settings[i].settingButton->setLabel(settings[i].settingLabel);
 
+        settings[i].settingIcon->setPosition(-300, 0);
+		settings[i].settingIconOver->setPosition(-300, 0);
         settings[i].settingButton->setPosition(0, 150 - (settings[i].settingImage->getHeight() + 30) * i);
         settings[i].settingButton->setTrigger(&touchTrigger);
         settings[i].settingButton->setTrigger(&wpadTouchTrigger);
@@ -123,6 +131,8 @@ SettingsCategoryMenu::~SettingsCategoryMenu()
     {
         delete settings[i].settingImage;
         delete settings[i].settingImageSelected;
+        delete settings[i].settingIcon;
+		delete settings[i].settingIconOver;
         delete settings[i].settingButton;
         delete settings[i].settingLabel;
     }
@@ -160,6 +170,26 @@ void SettingsCategoryMenu::OnSettingButtonClick(GuiButton *button, const GuiCont
             keyMenu->settingsOkClicked.connect(this, &SettingsCategoryMenu::OnKeyPadOkClicked);
             menu = keyMenu;
             break;
+        }
+        case TypeDownloadLanguage: {			
+			categoryFrame.setState(GuiElement::STATE_DISABLED);
+
+			UpdateLanguage *DownloaderLanguage = new UpdateLanguage();
+			DownloaderLanguage->setEffect(EFFECT_FADE, 15, 255);
+			DownloaderLanguage->effectFinished.connect(this, &SettingsCategoryMenu::OnOpenEffectFinish);
+			DownloaderLanguage->asyncLoadFinished.connect(this, &SettingsCategoryMenu::OnUpdateLanguageFinish);
+			DownloaderLanguage->startDownloadingLanguage();
+			append(DownloaderLanguage);
+			break;
+		}
+		case TypeSelectLanguage: {
+ 			if(CSettings::getDataType(categorySettings[i].index) != CSettings::TypeString)
+                return;
+
+ 			SettingsLanguageMenu *LanguageMenu = new SettingsLanguageMenu(width, height, tr(categorySettings[i].name), categoryNameTitle);
+ 			LanguageMenu->settingsBackClicked.connect(this, &SettingsCategoryMenu::OnSubMenuCloseClicked);
+ 			menu = LanguageMenu;
+ 			break;
         }
         case Type2Buttons:
         case Type3Buttons:
@@ -199,7 +229,7 @@ void SettingsCategoryMenu::OnSettingButtonClick(GuiButton *button, const GuiCont
             for(int n = 0; n < buttonCount; n++)
                 buttonNames.push_back(tr(categorySettings[i].valueStrings[n].name));
 
-            ButtonChoiceMenu *buttonMenu = new ButtonChoiceMenu(width, height, tr(categorySettings[i].name), buttonNames, buttonSelected);
+             ButtonChoiceMenu *buttonMenu = new ButtonChoiceMenu(width, height, tr(categorySettings[i].name), categoryNameTitle, buttonNames, buttonSelected);
             buttonMenu->settingsBackClicked.connect(this, &SettingsCategoryMenu::OnSubMenuCloseClicked);
             buttonMenu->settingsOkClicked.connect(this, &SettingsCategoryMenu::OnButtonChoiceOkClicked);
             menu = buttonMenu;
@@ -207,15 +237,18 @@ void SettingsCategoryMenu::OnSettingButtonClick(GuiButton *button, const GuiCont
         }
     }
 
-    menu->setEffect(EFFECT_FADE, 10, 255);
-    menu->setState(STATE_DISABLED);
-    menu->effectFinished.connect(this, &SettingsCategoryMenu::OnSubMenuOpenEffectFinish);
+    if(categorySettings[i].type != TypeDownloadLanguage)
+	{
+		menu->setEffect(EFFECT_FADE, 10, 255);
+	    menu->setState(STATE_DISABLED);
+	    menu->effectFinished.connect(this, &SettingsCategoryMenu::OnSubMenuOpenEffectFinish);
 
-    append(menu);
+	    append(menu);
 
-    //! disable all current elements and fade them out with fading in new menu
-    categoryFrame.setState(STATE_DISABLED);
-    categoryFrame.setEffect(EFFECT_FADE, -10, 0);
+		//! disable all current elements and fade them out with fading in new menu
+		categoryFrame.setState(STATE_DISABLED);
+		categoryFrame.setEffect(EFFECT_FADE, -10, 0);
+	}
 }
 
 void SettingsCategoryMenu::OnButtonChoiceOkClicked(GuiElement *element, int selectedButton)
@@ -329,6 +362,22 @@ void SettingsCategoryMenu::OnKeyPadOkClicked(GuiElement *element, const std::str
     //! fade in category selection
     categoryFrame.setEffect(EFFECT_FADE, 10, 255);
     append(&categoryFrame);
+}
+
+void SettingsCategoryMenu::OnUpdateLanguageFinish(GuiElement *element)
+{
+    //! disable element for triggering buttons again
+    element->setState(GuiElement::STATE_DISABLED);
+    element->setEffect(EFFECT_FADE, -10, 0);
+    element->effectFinished.connect(this, &SettingsCategoryMenu::OnSubMenuCloseEffectFinish);
+}
+
+void SettingsCategoryMenu::OnOpenEffectFinish(GuiElement *element)
+{
+    //! once the menu is open reset its state and allow it to be "clicked/hold"
+    element->effectFinished.disconnect(this);
+    element->clearState(GuiElement::STATE_DISABLED);
+
 }
 
 void SettingsCategoryMenu::OnSubMenuCloseClicked(GuiElement *element)

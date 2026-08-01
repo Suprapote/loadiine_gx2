@@ -17,8 +17,6 @@
 #ifndef GUI_TRIGGER_H_
 #define GUI_TRIGGER_H_
 
-#include "dynamic_libs/os_functions.h"
-
 
 //!Menu input trigger management. Determine if action is neccessary based on input data by comparing controller input data to a specific trigger element.
 class GuiTrigger

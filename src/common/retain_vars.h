@@ -1,7 +1,9 @@
 #ifndef RETAINS_VARS_H_
 #define RETAINS_VARS_H_
-#include <gctypes.h>
+#include <wut_types.h>
+#include "../common/kernel_defs.h"
 
+extern ReducedCosAppXmlInfo cosAppXmlInfoStruct;
 extern u8 gSettingLaunchPyGecko;
 extern u8 gSettingUseUpdatepath;
 extern u8 gSettingPadconMode;
@@ -13,5 +15,6 @@ extern u8 gHIDPADNetwork;
 extern u8 gEnableDLC;
 extern u32 gLoaderPhysicalBufferAddr;
 extern char gServerIP[16];
+extern char gAoc_Id[256];
 
 #endif // RETAINS_VARS_H_

@@ -60,4 +60,3 @@ void GuiCheckBox::update(GuiController * c){
     }
      GuiToggle::update(c);
 }
-
