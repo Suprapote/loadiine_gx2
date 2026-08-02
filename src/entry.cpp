@@ -29,8 +29,6 @@ extern "C" int main(int argc, char **argv)
     //ControllerPatcher::Init(CONTROLLER_PATCHER_PATH);
     //unmount_sd_fat("sd");
    // ControllerPatcher::disableControllerMapping();
-    //if(gHIDPADNetwork){ ControllerPatcher::startNetworkServer(); }
-    //ControllerPatcher::setRumbleActivated(gHIDPADRumble);
 
     //!*******************************************************************
     //!                        Dynamic Patching                          *

@@ -92,8 +92,8 @@ Application::~Application()
 
 	gettextCleanUp();
 
-	/*if(!gHIDPADEnabled){
-        ControllerPatcher::destroyConfigHelper();
+	/*if(!gHIDPADEnabled && gConfig_done){
+        deinit_config_controller(); //Needs InitSysHIDFunctionPointers();! here done by init_config_controller() when config_done is set.
     }*/
 
     CursorDrawer::destroyInstance();
@@ -102,6 +102,9 @@ Application::~Application()
 
 void Application::exec()
 {
+    //! load main settings from the config file
+    CSettings::instance()->Load();
+
     //! start main GX2 thread
     resumeThread();
     //! now wait for thread to finish
@@ -227,7 +230,7 @@ bool Application::procUI(void)
 					//! load language
 					if(!CSettings::getValueAsString(CSettings::AppLanguage).empty())
 					{
-						std::string languagePath = "sd:/wiiu/apps/loadiine_gx2/languages/" + CSettings::getValueAsString(CSettings::AppLanguage) + ".lang";
+						std::string languagePath = "fs:/vol/external01/wiiu/apps/loadiine_gx2/languages/" + CSettings::getValueAsString(CSettings::AppLanguage) + ".lang";
 						gettextLoadLanguage(languagePath.c_str());
 					}
 					mainStartUp->SetText(trNOOP("Loaded language"));
@@ -242,7 +245,7 @@ bool Application::procUI(void)
 					mainStartUp->SetText(trNOOP("Loaded HID settings"));
 
 					//! load resources
-					Resources::LoadFiles("sd:/wiiu/apps/loadiine_gx2/resources");
+					Resources::LoadFiles("fs:/vol/external01/wiiu/apps/loadiine_gx2/resources");
 					mainStartUp->SetText(trNOOP("Loaded resources"));
 
 					log_printf("Loading game list\n");

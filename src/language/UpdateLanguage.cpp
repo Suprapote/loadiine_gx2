@@ -26,8 +26,8 @@
 
 using namespace std;
 
-static const char *LanguageURL = "http://wiiu.hol.es/";
-static const char *LanguageFilesURL = "http://wiiu.hol.es/languages/";
+static const char *LanguageURL = "https://raw.githubusercontent.com/Suprapote/loadiine_gx2/";
+static const char *LanguageFilesURL = "https://raw.githubusercontent.com/Suprapote/loadiine_gx2/master/languages/";
 
 void UpdateLanguage::executeThread()
 {
@@ -76,7 +76,10 @@ void UpdateLanguage::GetLanguages()
 			continue;
 
 			vector<string> value = stringSplit(valueSplit[1].c_str(), "-->");
-            languageFile.push_back(value[0]);
+			if(value.empty())
+				continue;
+
+			languageFile.push_back(value[0]);
 
 			log_printf("languages files %s\n", value[0].c_str());
 		}

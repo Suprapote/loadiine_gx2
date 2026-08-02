@@ -39,6 +39,7 @@ CSettings::CSettings()
 
     configPath = SD_PATH WIIU_PATH "/apps/loadiine_gx2";
 	this->SetDefault();
+	this->Load();
 }
 
 CSettings::~CSettings()
@@ -105,7 +106,11 @@ void CSettings::SetDefault()
     settingsNames[ConsoleRegionCode] = "ConsoleRegionCode";
     settingsValues[ConsoleRegionCode].dataType = TypeString;
     settingsValues[ConsoleRegionCode].strValue = new std::string("EN");
-
+	
+	settingsNames[LanguagesPath] = "LanguagesPath";
+    settingsValues[LanguagesPath].dataType = TypeString;
+    settingsValues[LanguagesPath].strValue = new std::string(SD_PATH WIIU_PATH "/apps/loadiine_gx2/languages");
+ 
 	settingsNames[AppLanguage] = "AppLanguage";
     settingsValues[AppLanguage].dataType = TypeString;
     settingsValues[AppLanguage].strValue = new std::string();
@@ -125,14 +130,6 @@ void CSettings::SetDefault()
     settingsNames[HIDPadEnabled] = "HIDPadUse";
     settingsValues[HIDPadEnabled].dataType = TypeU8;
     settingsValues[HIDPadEnabled].ucValue = SETTING_OFF;
-
-    settingsNames[HIDPadRumble] = "HIDPadRumble";
-    settingsValues[HIDPadRumble].dataType = TypeU8;
-    settingsValues[HIDPadRumble].ucValue = SETTING_ON;
-
-    settingsNames[HIDPadNetwork] = "HIDPadNetwork";
-    settingsValues[HIDPadNetwork].dataType = TypeU8;
-    settingsValues[HIDPadNetwork].ucValue = SETTING_ON;
 
     settingsNames[ShowGameSettings] = "ShowGameSettings";
     settingsValues[ShowGameSettings].dataType = TypeU8;

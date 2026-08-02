@@ -72,7 +72,7 @@ public:
 	//! Check if thread is terminated
 	virtual bool isThreadTerminated(void) const { if(pThread) return OSIsThreadTerminated(pThread); return false; }
 	//! Check if thread is running
-	virtual bool isThreadRunning(void) const { return !isThreadSuspended() && !isThreadRunning(); }
+	virtual bool isThreadRunning(void) const { return pThread != NULL && !isThreadSuspended() && !OSIsThreadTerminated(pThread); }
 	//! Shutdown thread
 	virtual void shutdownThread(void)
 	{

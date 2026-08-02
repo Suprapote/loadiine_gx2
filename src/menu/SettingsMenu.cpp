@@ -74,7 +74,7 @@ static const SettingType LoaderSettings[] =
 
 static const SettingType GameSettings[] =
 {
-    { trNOOP("Launch Mode"), ValueLaunchMode, "gameModeLoad.png", "gameModeLoadGlow.png", Type4Buttons, CSettings::GameLaunchMethod },
+    { trNOOP("Launch Mode"), ValueLaunchMode, "gameModeLoad.png", "gameModeLoadGlow.png", Type2Buttons, CSettings::GameLaunchMethod },
     { trNOOP("Log Server Control"), ValueOnOff, "gameLoadLog.png", "gameLoadLogGlow.png", Type2Buttons, CSettings::GameLogServer },
     { trNOOP("Load PyGecko"), ValueOnOff, "gamePyGeckoLoad.png", "gamePyGeckoLoadGlow.png", Type2Buttons, CSettings::LaunchPyGecko },
     { trNOOP("Enable Padcon"), ValueOnOff, "gamePadconIcon.png", "gamePadconIconGlow.png", Type2Buttons, CSettings::PadconMode },

@@ -33,20 +33,20 @@ int CFile::open(const std::string & filepath, eOpenTypes mode)
 
 	s32 openMode = 0;
 
-	switch(mode)
+    switch(mode)
 	{
     default:
     case ReadOnly:
         openMode = O_RDONLY;
         break;
     case WriteOnly:
-        openMode = O_WRONLY;
+        openMode = O_WRONLY | O_CREAT | O_TRUNC;
         break;
     case ReadWrite:
-        openMode = O_RDWR;
+        openMode = O_RDWR | O_CREAT;
         break;
     case Append:
-        openMode = O_APPEND | O_WRONLY;
+        openMode = O_WRONLY | O_CREAT | O_APPEND;
         break;
 	}
 
@@ -54,7 +54,7 @@ int CFile::open(const std::string & filepath, eOpenTypes mode)
     //! on the second launch it causes issues because we don't overwrite
     //! the .data sections which is needed for a normal application to re-init
     //! this will be added with launching as RPX
-	iFd = ::open(filepath.c_str(), openMode);
+	iFd = ::open(filepath.c_str(), openMode, 0777);
 	if(iFd < 0)
 		return iFd;
 

@@ -1,15 +1,8 @@
 //#include <string>
+#include <nsysnet/_socket.h>
 #include "utils/logger.h"
 #include "Application.h"
-/*#include "patcher/fs_patcher.h"
-#include "patcher/fs_sd_patcher.h"
-#include "patcher/rplrpx_patcher.h"
-#include "patcher/extra_log_patcher.h"
-#include "patcher/hid_controller_function_patcher.h"
-#include "patcher/aoc_patcher.h"*/
 #include "fs/fs_utils.h"
-
-//#include "kernel/kernel_functions.h"
 #include "settings/CSettings.h"
 #include "system/exception_handler.h"
 #include "system/memory.h"
@@ -32,6 +25,11 @@ extern "C" int Menu_Main(void)
 
     log_init();
     log_printf("Starting Loadiine GX2 " LOADIINE_VERSION "\n");
+
+    //! Initialize the socket library. Without this libcurl (used by the
+    //! language/cover downloaders) crashes with a DSI exception on the
+    //! first transfer because the nsysnet socket stack is not set up.
+    socket_lib_init();
 
     /*InitFSFunctionPointers();
     InitGX2FunctionPointers();
@@ -89,6 +87,8 @@ extern "C" int Menu_Main(void)
     //unmount_sd_fat("sd");
     log_printf("Release memory\n");
     memoryRelease();
+    //! Shut down the socket library that was initialized on startup
+    socket_lib_finish();
     log_printf("Loadiine peace out...\n");
     //log_deinit();
 
@@ -124,3 +124,4 @@ void RestoreAllInstructions(){
     log_printf("Restoring controller_patcher (HID to VPAD)\n");
     RestoreInvidualInstructions(method_hooks_hid_controller,    method_hooks_size_hid_controller);
 }*/
+

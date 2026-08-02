@@ -1,60 +1,60 @@
 # Loadiine GX2 language source file.
-# german.lang - v0.3
+# swedish.lang - v0.3
 # don't delete/change this line (Ã©).
 msgid ""
 msgstr ""
 "Project-Id-Version: Loadiine GX2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-07 10:05+0200\n"
+"POT-Creation-Date: 2016-04-03 10:24+0200\n"
 "PO-Revision-Date: 2016-22-09 14:10+0200\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: German\n"
+"Last-Translator: Kingcool\n"
+"Language-Team: Kingcool\n"
+"Language: sv-SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Loadiine GX2"
-msgstr "Loadiine GX2"
+msgstr ""
 
 msgid "Official Site:"
-msgstr "Offizielle Seite:"
+msgstr "Officiell hemsida:"
 
 msgid "Coding:"
-msgstr "Programmierer:"
+msgstr "Programmerare:"
 
 msgid "Design:"
 msgstr ""
 
 msgid "Some guy who doesn't want to be named."
-msgstr "Jemand der nicht genannt werden will."
+msgstr "En kille som inte vill bli namngiven."
 
 msgid "Testing:"
-msgstr "Tester:"
+msgstr "Testare:"
 
 msgid "Cyan / Maschell / n1ghty / OnionKnight and many more"
-msgstr "Cyan / Maschell / n1ghty / OnionKnight und viele weitere"
+msgstr "Cyan / Maschell / n1ghty / OnionKnight och många fler"
 
 msgid "Social Presence:"
-msgstr "Ã–ffentliches Auftreten:"
+msgstr "Socialt:"
 
 msgid "Based on:"
-msgstr "Basierend auf:"
+msgstr "Baserad på:"
 
 msgid "Loadiine v4.0 by Golden45 and Dimok"
-msgstr "Loadiine v4.0 von Golden45 und Dimok"
+msgstr "Loadiine v4.0 av Golden45 och Dimok"
 
 msgid "Big thanks to:"
-msgstr "Besonderen Dank an:"
+msgstr "Stort tack till:"
 
 msgid "lustar for GameTDB and hosting covers / disc images"
-msgstr "lustar fÃ¼r GameTDB und die Bereitstellung der Cover-Server"
+msgstr "lustar för GameTDB och hosting av omslag/skivbilder"
 
 msgid "Marionumber1 for his kernel exploit"
-msgstr "Marionumber1 fÃ¼r seinen Kernel-Exploit"
+msgstr "Marionumber1 för hans kernel exploit"
 
 msgid "The whole libwiiu team and it's contributors."
-msgstr "Dem ganzen libwiiu Team und allen Mitwirkenden."
+msgstr "Till hela libwiiu teamet och deras medhjälpare."
 
 msgid "Extra Save:"
 msgstr ""
@@ -69,7 +69,7 @@ msgid "Save Mode"
 msgstr ""
 
 msgid "Launch Mode"
-msgstr "Spielstart-Methode"
+msgstr ""
 
 msgid "<Settings Default>"
 msgstr ""
@@ -78,55 +78,55 @@ msgid "Saving game settings!"
 msgstr ""
 
 msgid "Off"
-msgstr "Aus"
+msgstr "Av"
 
 msgid "On"
-msgstr "An"
+msgstr "På"
 
 msgid "Icon Carousel"
-msgstr "Iconkarussell"
+msgstr "Ikonkarusell"
 
 msgid "Grid View"
-msgstr "Gitteransicht"
+msgstr "Grind vy"
 
 msgid "Cover Carousel"
-msgstr "Coverkarussell"
+msgstr "Omslagskarusell"
 
 msgid "Background customizations"
-msgstr "Hintergrundanpassungen"
+msgstr "Bakgrundskonfigurationer"
 
 msgid "GUI"
-msgstr "GUI"
+msgstr ""
 
 msgid "Game View Selection"
-msgstr "Spielansicht Auswahl"
+msgstr "Välj utseende på spelmenyn"
 
 msgid "Adjust log server IP and port"
-msgstr "Logger-Einstellungen"
+msgstr "Konfigurera log server ip och port"
 
 msgid "Customize games path"
-msgstr "Spieleordner Ã¤ndern"
+msgstr "Redigera målmappen för spel"
 
 msgid "Customize save path"
-msgstr "Spielstandordner Ã¤ndern"
+msgstr "Redigera vilken mapp game savesen sparas i"
 
 msgid "Loader"
-msgstr "Loader"
+msgstr ""
 
 msgid "Set save mode"
-msgstr "Spielstand-Optionen"
+msgstr "Välj sparläge"
 
 msgid "Game"
-msgstr "Spiel"
+msgstr "Spel"
 
 msgid "HID settings"
 msgstr ""
  
 msgid "Launch method selection"
-msgstr "Spielstart-Methode auswÃ¤hlen"
+msgstr "Välj launchmetod"
 
 msgid "Log server control"
-msgstr "Log-Server Kontrolle"
+msgstr "Log Server"
 
 msgid "Read and write memory"
 msgstr ""
@@ -135,16 +135,16 @@ msgid "Turn off the screen Gamepad"
 msgstr ""
 
 msgid "Credits"
-msgstr "Credits"
+msgstr "Tack till"
 
 msgid "Credits to all contributors"
-msgstr "Mitwirkende"
+msgstr "Tack till alla medhjälpare"
 
 msgid "Game View TV"
-msgstr "Ansicht am Fernseher"
+msgstr "Spelvy TV"
 
 msgid "Game View DRC"
-msgstr "Ansicht am Gamepad"
+msgstr "Spelvy DRC"
 
 msgid "Show Game Settings"
 msgstr ""
@@ -153,13 +153,13 @@ msgid "Host IP"
 msgstr ""
 
 msgid "Game Path"
-msgstr "Spielordner Ã¤ndern"
+msgstr "Spelmapp"
 
 msgid "Game Save Path"
-msgstr "Speicherstandordner Ã¤ndern"
+msgstr "Game save mapp"
 
 msgid "Game Save Mode"
-msgstr "Speichermodus"
+msgstr "Game Save läge"
 
 msgid "Load PyGecko"
 msgstr ""
@@ -171,22 +171,22 @@ msgid "HID-Pad"
 msgstr ""
 
 msgid "Shared Mode"
-msgstr "Gemeisame SpielstÃ¤nde"
+msgstr ""
 
 msgid "Unique Mode"
-msgstr "Getrennte SpielstÃ¤nde"
+msgstr ""
 
 msgid "Mii Maker Mode"
-msgstr "Mii Maker Modus"
+msgstr ""
 
 msgid "Smash Bros Mode"
-msgstr "Smash Bros Modus"
+msgstr ""
 
 msgid "Karaoke Mode"
-msgstr "Karaoke Modus"
+msgstr ""
 
 msgid "Art Atelier Mode"
-msgstr "Art Atelier Modus"
+msgstr ""
 
 msgid "Download languages"
 msgstr ""

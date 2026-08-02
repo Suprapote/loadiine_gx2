@@ -93,6 +93,6 @@ void CSettingsLanguages::SetLanguage(int languageSelect)
 	CSettings::setValueAsString(CSettings::AppLanguage, nameLanguage);
 
 	//! load language
-	languagesPath = "sd:/wiiu/apps/loadiine_gx2/languages/" + CSettings::getValueAsString(CSettings::AppLanguage) + ".lang";
+	languagesPath = "fs:/vol/external01/wiiu/apps/loadiine_gx2/languages/" + CSettings::getValueAsString(CSettings::AppLanguage) + ".lang";
 	gettextLoadLanguage(languagesPath.c_str());
 }

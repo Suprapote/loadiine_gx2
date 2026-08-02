@@ -57,50 +57,50 @@ msgstr "Definições do PyGecko"
 msgid "Some guy who doesn't want to be named."
 msgstr "Um gajo qualquer que não quer ser mencionado."
 
-#: src/Application.cpp:233
+#: src/Application.cpp:236
 msgid "Loaded language"
 msgstr ""
 
-#: src/Application.cpp:238
+#: src/Application.cpp:241
 msgid "Reloaded logger to change IP to settings IP"
 msgstr ""
 
-#: src/Application.cpp:242
+#: src/Application.cpp:245
 #, fuzzy
 msgid "Loaded HID settings"
 msgstr "Definições de HID"
 
-#: src/Application.cpp:246
+#: src/Application.cpp:249
 #, fuzzy
 msgid "Loaded resources"
 msgstr "Modo de guardamento"
 
-#: src/Application.cpp:250
+#: src/Application.cpp:253
 #, fuzzy
 msgid "Loading game list"
 msgstr "A guardar opções do jogo!"
 
-#: src/Application.cpp:253
+#: src/Application.cpp:256
 msgid "Loading Music"
 msgstr ""
 
-#: src/Application.cpp:269
+#: src/Application.cpp:272
 msgid "Initializing main"
 msgstr ""
 
-#: src/gui/MessageBox.cpp:91
+#: src/gui/MessageBox.cpp:93
 msgid "Ok"
 msgstr ""
 
-#: src/gui/MessageBox.cpp:92
+#: src/gui/MessageBox.cpp:94
 msgid "Cancel"
 msgstr ""
 
-#: src/gui/MessageBox.cpp:93
+#: src/gui/MessageBox.cpp:95
 msgid "Yes"
 msgstr ""
 
-#: src/gui/MessageBox.cpp:94
+#: src/gui/MessageBox.cpp:96
 msgid "No"
 msgstr ""
 
@@ -116,15 +116,15 @@ msgstr ""
 msgid "Getting file list"
 msgstr ""
 
-#: src/language/UpdateLanguage.cpp:115
+#: src/language/UpdateLanguage.cpp:118
 msgid "Languages files:"
 msgstr ""
 
-#: src/language/UpdateLanguage.cpp:121 src/network/GameImageDownloader.cpp:159
+#: src/language/UpdateLanguage.cpp:124 src/network/GameImageDownloader.cpp:159
 msgid "files left."
 msgstr ""
 
-#: src/language/UpdateLanguage.cpp:135 src/network/GameImageDownloader.cpp:251
+#: src/language/UpdateLanguage.cpp:138 src/network/GameImageDownloader.cpp:251
 msgid "Downloading files"
 msgstr ""
 

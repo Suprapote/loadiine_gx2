@@ -40,6 +40,8 @@ MessageBox::MessageBox(int typeButtons, int typeIcons, bool progressBar)
 {   
 
 	selectedButtonDPAD = -1;
+	buttonCount = 0;
+	selectedButton = -1;
 
 	bgBlur.setAlpha(0.5f);
     append(&bgBlur);

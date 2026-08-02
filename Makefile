@@ -257,6 +257,8 @@ translations: $(wildcard $(PROJECTDIR)/languages/*.lang)
 
 #---------------------------------------------------------------------------------
 
+export PATH		:=	$(PROJECTDIR)/gettext-bin:$(PATH)
+
 %.pot: $(CFILES) $(CPPFILES) $(HFILES)
 	@echo Updating language files ...
 	@touch $(PROJECTDIR)/languages/$(TARGET).pot
