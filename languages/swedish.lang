@@ -5,20 +5,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Loadiine GX2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-03 10:24+0200\n"
+"POT-Creation-Date: 2016-08-28 11:40+0200\n"
 "PO-Revision-Date: 2016-22-09 14:10+0200\n"
 "Last-Translator: Kingcool\n"
 "Language-Team: Kingcool\n"
 "Language: sv-SE\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "Loadiine GX2"
-msgstr ""
-
-msgid "Official Site:"
-msgstr "Officiell hemsida:"
 
 msgid "Coding:"
 msgstr "Programmerare:"
@@ -26,287 +20,334 @@ msgstr "Programmerare:"
 msgid "Design:"
 msgstr ""
 
-msgid "Some guy who doesn't want to be named."
-msgstr "En kille som inte vill bli namngiven."
-
-msgid "Testing:"
-msgstr "Testare:"
-
-msgid "Cyan / Maschell / n1ghty / OnionKnight and many more"
-msgstr "Cyan / Maschell / n1ghty / OnionKnight och många fler"
-
-msgid "Social Presence:"
-msgstr "Socialt:"
-
-msgid "Based on:"
-msgstr "Baserad på:"
-
-msgid "Loadiine v4.0 by Golden45 and Dimok"
-msgstr "Loadiine v4.0 av Golden45 och Dimok"
-
-msgid "Big thanks to:"
-msgstr "Stort tack till:"
-
-msgid "lustar for GameTDB and hosting covers / disc images"
-msgstr "lustar för GameTDB och hosting av omslag/skivbilder"
-
-msgid "Marionumber1 for his kernel exploit"
-msgstr "Marionumber1 för hans kernel exploit"
-
-msgid "The whole libwiiu team and it's contributors."
-msgstr "Till hela libwiiu teamet och deras medhjälpare."
-
-msgid "Extra Save:"
-msgstr ""
-
 msgid "Enable DLC Support:"
 msgstr ""
 
-msgid "Update Folder"
+msgid "HID-Pad Network"
 msgstr ""
 
-msgid "Save Mode"
+msgid "HID-Pad Rumble"
 msgstr ""
 
-msgid "Launch Mode"
+msgid "Loadiine GX2"
 msgstr ""
 
-msgid "<Settings Default>"
+msgid "Padcon"
 msgstr ""
 
-msgid "Saving game settings!"
+msgid "Padcon settings"
 msgstr ""
 
-msgid "Off"
-msgstr "Av"
-
-msgid "On"
-msgstr "På"
-
-msgid "Icon Carousel"
-msgstr "Ikonkarusell"
-
-msgid "Grid View"
-msgstr "Grind vy"
-
-msgid "Cover Carousel"
-msgstr "Omslagskarusell"
-
-msgid "Background customizations"
-msgstr "Bakgrundskonfigurationer"
-
-msgid "GUI"
+msgid "PyGecko"
 msgstr ""
 
-msgid "Game View Selection"
-msgstr "Välj utseende på spelmenyn"
-
-msgid "Adjust log server IP and port"
-msgstr "Konfigurera log server ip och port"
-
-msgid "Customize games path"
-msgstr "Redigera målmappen för spel"
-
-msgid "Customize save path"
-msgstr "Redigera vilken mapp game savesen sparas i"
-
-msgid "Loader"
+msgid "PyGecko settings"
 msgstr ""
 
-msgid "Set save mode"
-msgstr "Välj sparläge"
+msgid "Some guy who doesn't want to be named."
+msgstr "En kille som inte vill bli namngiven."
 
-msgid "Game"
-msgstr "Spel"
-
-msgid "HID settings"
-msgstr ""
- 
-msgid "Launch method selection"
-msgstr "Välj launchmetod"
-
-msgid "Log server control"
-msgstr "Log Server"
-
-msgid "Read and write memory"
-msgstr ""
-
-msgid "Turn off the screen Gamepad"
-msgstr ""
-
-msgid "Credits"
-msgstr "Tack till"
-
-msgid "Credits to all contributors"
-msgstr "Tack till alla medhjälpare"
-
-msgid "Game View TV"
-msgstr "Spelvy TV"
-
-msgid "Game View DRC"
-msgstr "Spelvy DRC"
-
-msgid "Show Game Settings"
-msgstr ""
-
-msgid "Host IP"
-msgstr ""
-
-msgid "Game Path"
-msgstr "Spelmapp"
-
-msgid "Game Save Path"
-msgstr "Game save mapp"
-
-msgid "Game Save Mode"
-msgstr "Game Save läge"
-
-msgid "Load PyGecko"
-msgstr ""
-
-msgid "Enable Padcon"
-msgstr ""
-
-msgid "HID-Pad"
-msgstr ""
-
-msgid "Shared Mode"
-msgstr ""
-
-msgid "Unique Mode"
-msgstr ""
-
-msgid "Mii Maker Mode"
-msgstr ""
-
-msgid "Smash Bros Mode"
-msgstr ""
-
-msgid "Karaoke Mode"
-msgstr ""
-
-msgid "Art Atelier Mode"
-msgstr ""
-
-msgid "Download languages"
-msgstr ""
-
-msgid "Select language"
-msgstr ""
-
-msgid "Download"
-msgstr ""
-
-msgid "Languages"
-msgstr ""
-
-msgid "Default"
-msgstr ""
-
-msgid "Brazilian"
-msgstr ""
-
-msgid "English"
-msgstr ""
-
-msgid "Chinese"
-msgstr ""
-
-msgid "Traditional Chinese"
-msgstr ""
-
-msgid "French"
-msgstr ""
-
-msgid "German"
-msgstr ""
-
-msgid "Hungarian"
-msgstr ""
-
-msgid "Italian"
-msgstr ""
-
-msgid "Spanish"
-msgstr ""
-
-msgid "Swedish"
-msgstr ""
-
-msgid "Greek"
-msgstr ""
-
-msgid "Portuguese"
-msgstr ""
-
-msgid "Japanese"
-msgstr ""
-
+#: src/Application.cpp:236
 msgid "Loaded language"
 msgstr ""
 
+#: src/Application.cpp:241
 msgid "Reloaded logger to change IP to settings IP"
 msgstr ""
 
+#: src/Application.cpp:245
 msgid "Loaded HID settings"
 msgstr ""
 
+#: src/Application.cpp:249
 msgid "Loaded resources"
 msgstr ""
 
+#: src/Application.cpp:253
 msgid "Loading game list"
 msgstr ""
 
+#: src/Application.cpp:256
 msgid "Loading Music"
 msgstr ""
 
+#: src/Application.cpp:272
 msgid "Initializing main"
 msgstr ""
 
-msgid "Download languages"
+#: src/gui/MessageBox.cpp:93
+msgid "Ok"
 msgstr ""
 
-msgid "Connecting.."
-msgstr ""
-
-msgid "Getting file list"
-msgstr ""
-
-msgid "Downloading files"
-msgstr ""
-
-msgid "Languages files:"
-msgstr "
-
-msgid "files left"
-msgstr ""
-
-msgid "Download 3D Covers"
-msgstr ""
-
-msgid "Ok
-msgstr ""
-
+#: src/gui/MessageBox.cpp:94
 msgid "Cancel"
 msgstr ""
 
+#: src/gui/MessageBox.cpp:95
 msgid "Yes"
 msgstr ""
 
+#: src/gui/MessageBox.cpp:96
 msgid "No"
 msgstr ""
 
-msgid "Loading file"
+#: src/language/UpdateLanguage.cpp:36 src/menu/SettingsMenu.cpp:56
+msgid "Download languages"
 msgstr ""
 
-msgid "Writing list to SD"
+#: src/language/UpdateLanguage.cpp:57 src/network/GameImageDownloader.cpp:55
+msgid "Connecting.."
 msgstr ""
 
+#: src/language/UpdateLanguage.cpp:62
+msgid "Getting file list"
+msgstr ""
+
+#: src/language/UpdateLanguage.cpp:118
+msgid "Languages files:"
+msgstr ""
+
+#: src/language/UpdateLanguage.cpp:124 src/network/GameImageDownloader.cpp:159
+msgid "files left."
+msgstr ""
+
+#: src/language/UpdateLanguage.cpp:138 src/network/GameImageDownloader.cpp:251
+msgid "Downloading files"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:69
+msgid "Loadiine GX2 - Aroma"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:76
+msgid "Official Site:"
+msgstr "Officiell hemsida:"
+
+#: src/menu/CreditsMenu.cpp:89
+msgid "Original project:"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:102
+msgid "Port to aroma:"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:108
+msgid "Suprapote"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:115
+msgid "Testing:"
+msgstr "Testare:"
+
+#: src/menu/CreditsMenu.cpp:121
+msgid "Cyan / Maschell / n1ghty / OnionKnight and many more"
+msgstr "Cyan / Maschell / n1ghty / OnionKnight och mï¿½nga fler"
+
+#: src/menu/CreditsMenu.cpp:128
+msgid "Social Presence:"
+msgstr "Socialt:"
+
+#: src/menu/CreditsMenu.cpp:141
+msgid "Based on:"
+msgstr "Baserad pï¿½:"
+
+#: src/menu/CreditsMenu.cpp:147
+msgid "Loadiine v4.0 by Golden45 and Dimok"
+msgstr "Loadiine v4.0 av Golden45 och Dimok"
+
+#: src/menu/CreditsMenu.cpp:154
+msgid "Big thanks to:"
+msgstr "Stort tack till:"
+
+#: src/menu/CreditsMenu.cpp:160
+msgid "lustar for GameTDB and hosting covers / disc images"
+msgstr "lustar fï¿½r GameTDB och hosting av omslag/skivbilder"
+
+#: src/menu/CreditsMenu.cpp:167
+msgid "Marionumber1 for his kernel exploit"
+msgstr "Marionumber1 fï¿½r hans kernel exploit"
+
+#: src/menu/CreditsMenu.cpp:174
+msgid "The whole libwiiu team and it's contributors."
+msgstr "Till hela libwiiu teamet och deras medhjï¿½lpare."
+
+#: src/menu/GameLauncherMenu.cpp:53
+msgid "Extra Save:"
+msgstr ""
+
+#: src/menu/GameLauncherMenu.cpp:54
+msgid "Enable DLC On SD:"
+msgstr ""
+
+#: src/menu/GameLauncherMenu.cpp:77
+msgid "Update Folder"
+msgstr ""
+
+#: src/menu/GameLauncherMenu.cpp:78
+msgid "Save Mode"
+msgstr ""
+
+#: src/menu/GameLauncherMenu.cpp:79 src/menu/SettingsMenu.cpp:77
+msgid "Launch Mode"
+msgstr ""
+
+#: src/menu/GameLauncherMenu.cpp:90 src/menu/GameLauncherMenu.cpp:95
+msgid "<Settings Default>"
+msgstr ""
+
+#: src/menu/GameLauncherMenu.cpp:493
+msgid "Saving game settings!"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:32
+msgid "Off"
+msgstr "Av"
+
+#: src/menu/SettingsMenu.cpp:33
+msgid "On"
+msgstr "Pï¿½"
+
+#: src/menu/SettingsMenu.cpp:38
+msgid "Icon Carousel"
+msgstr "Ikonkarusell"
+
+#: src/menu/SettingsMenu.cpp:39
+msgid "Grid View"
+msgstr "Grind vy"
+
+#: src/menu/SettingsMenu.cpp:40
+msgid "Cover Carousel"
+msgstr "Omslagskarusell"
+
+#: src/menu/SettingsMenu.cpp:53
+msgid "Background customizations"
+msgstr "Bakgrundskonfigurationer"
+
+#: src/menu/SettingsMenu.cpp:53
+msgid "GUI"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:53
+msgid "Game View Selection"
+msgstr "Vï¿½lj utseende pï¿½ spelmenyn"
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Adjust log server IP and port"
+msgstr "Konfigurera log server ip och port"
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Customize games path"
+msgstr "Redigera mï¿½lmappen fï¿½r spel"
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Customize save path"
+msgstr "Redigera vilken mapp game savesen sparas i"
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Loader"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Set save mode"
+msgstr "Vï¿½lj sparlï¿½ge"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Game"
+msgstr "Spel"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "HID settings"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Launch method selection"
+msgstr "Vï¿½lj launchmetod"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Log server control"
+msgstr "Log Server"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Read and write memory"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Turn off the screen Gamepad"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:56 src/menu/SettingsMenu.cpp:87
+msgid "Languages"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:56
+msgid "Select language"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:57
+msgid "Credits"
+msgstr "Tack till"
+
+#: src/menu/SettingsMenu.cpp:57
+msgid "Credits to all contributors"
+msgstr "Tack till alla medhjï¿½lpare"
+
+#: src/menu/SettingsMenu.cpp:62
+msgid "Game View TV"
+msgstr "Spelvy TV"
+
+#: src/menu/SettingsMenu.cpp:63
+msgid "Game View DRC"
+msgstr "Spelvy DRC"
+
+#: src/menu/SettingsMenu.cpp:68
+msgid "Show Game Settings"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:69
+msgid "Host IP"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:70
+msgid "Game Path"
+msgstr "Spelmapp"
+
+#: src/menu/SettingsMenu.cpp:71
+msgid "Game Save Path"
+msgstr "Game save mapp"
+
+#: src/menu/SettingsMenu.cpp:72
+msgid "Game Save Mode"
+msgstr "Game Save lï¿½ge"
+
+#: src/menu/SettingsMenu.cpp:78
+#, fuzzy
+msgid "Log Server Control"
+msgstr "Log Server"
+
+#: src/menu/SettingsMenu.cpp:79
+msgid "Load PyGecko"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:80
+msgid "Enable Padcon"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:81
+msgid "HID-Pad"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:86
+msgid "Download"
+msgstr ""
+
+#: src/network/GameImageDownloader.cpp:42
+msgid "Download 3D Covers"
+msgstr ""
+
+#: src/utils/FileReplacer.cpp:120
 msgid "Creating filelist.txt:"
 msgstr ""
 
+#: src/utils/FileReplacer.cpp:124
 msgid "entries found"
-msgstr ""
-
-msgid "Enable DLC no legitimate"
 msgstr ""

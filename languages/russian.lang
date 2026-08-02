@@ -4,21 +4,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Loadiine GX2\n"
-"Report-Msgid-Bugs-To: loadiinegx2@sidy.ru\n"
-"POT-Creation-Date: 2018-01-01 09:52+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-28 11:40+0200\n"
 "PO-Revision-Date: 2018-01-01 14:10+0200\n"
 "Last-Translator: BoyNG\n"
 "Language-Team: SidY\n"
 "Language: Russian\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "Loadiine GX2"
-msgstr ""
-
-msgid "Official Site:"
-msgstr "Официальный сайт"
 
 msgid "Coding:"
 msgstr "Кодинг:"
@@ -26,287 +20,388 @@ msgstr "Кодинг:"
 msgid "Design:"
 msgstr "Дизайн:"
 
-msgid "Some guy who doesn't want to be named."
-msgstr "Какой то чел, который не захотел называть имя"
-
-msgid "Testing:"
-msgstr "Тестироване:"
-
-msgid "Cyan / Maschell / n1ghty / OnionKnight and many more"
-msgstr ""
-
-msgid "Social Presence:"
-msgstr ""
-
-msgid "Based on:"
-msgstr "Основан на:"
-
-msgid "Loadiine v4.0 by Golden45 and Dimok"
-msgstr ""
-
-msgid "Big thanks to:"
-msgstr "Большое спасибо:"
-
-msgid "lustar for GameTDB and hosting covers / disc images"
-msgstr ""
-
-msgid "Marionumber1 for his kernel exploit"
-msgstr ""
-
-msgid "The whole libwiiu team and it's contributors."
-msgstr ""
-
-msgid "Extra Save:"
-msgstr ""
-
 msgid "Enable DLC Support:"
 msgstr "Поддержка DLC"
 
-msgid "Update Folder"
-msgstr "Update каталог"
-
-msgid "Save Mode"
-msgstr "Режим сохранений"
-
-msgid "Launch Mode"
-msgstr "Способ запуска"
-
-msgid "<Settings Default>"
-msgstr "Сброс настроек"
-
-msgid "Saving game settings!"
-msgstr "Настройки сохранений игры"
-
-msgid "Off"
-msgstr "Выкл"
-
-msgid "On"
-msgstr "Вкл"
-
-msgid "Icon Carousel"
-msgstr "Карусель иконок"
-
-msgid "Grid View"
-msgstr "Сетка"
-
-msgid "Cover Carousel"
-msgstr "Карусель обложек"
-
-msgid "Background customizations"
-msgstr "Настройка фона"
-
-msgid "GUI"
-msgstr "Интерфейс"
-
-msgid "Game View Selection"
-msgstr "Отображение списка игр"
-
-msgid "Adjust log server IP and port"
-msgstr "Адрес:порт лог-сервера"
-
-msgid "Customize games path"
-msgstr "Настройка пути игр"
-
-msgid "Customize save path"
-msgstr "Настройка пути сохранений"
-
-msgid "Loader"
-msgstr "Загрузчик"
-
-msgid "Set save mode"
-msgstr "Задать режим сохранений"
-
-msgid "Game"
-msgstr "Игра"
-
-msgid "HID settings"
-msgstr "Настройка вида"
- 
-msgid "Launch method selection"
-msgstr "Выбор метода запуска"
-
-msgid "Log server control"
-msgstr "Управление ло-сервером"
-
-msgid "Read and write memory"
-msgstr "Чтение и запись памяти"
-
-msgid "Turn off the screen Gamepad"
-msgstr "Выключение экрана Wii U pad"
-
-msgid "Credits"
-msgstr "Авторы"
-
-msgid "Credits to all contributors"
+msgid "HID-Pad Network"
 msgstr ""
 
-msgid "Game View TV"
-msgstr "Отображение на ТВ"
+msgid "HID-Pad Rumble"
+msgstr ""
 
-msgid "Game View DRC"
-msgstr "Отображение на планшете"
+msgid "Loadiine GX2"
+msgstr ""
 
-msgid "Show Game Settings"
-msgstr "Показать настройки игры"
-
-msgid "Host IP"
-msgstr "IP адрес хоста"
-
-msgid "Game Path"
-msgstr "Путь игры"
-
-msgid "Game Save Path"
-msgstr "Путь сохранений игры"
-
-msgid "Game Save Mode"
-msgstr "Режим сохранений игры"
-
-msgid "Load PyGecko"
-msgstr "Загрузить PyGecko"
-
-msgid "Enable Padcon"
+#, fuzzy
+msgid "Padcon"
 msgstr "R-Stick отключает экран"
 
-msgid "HID-Pad"
-msgstr ""
+#, fuzzy
+msgid "Padcon settings"
+msgstr "Настройка вида"
 
-msgid "Shared Mode"
-msgstr ""
+#, fuzzy
+msgid "PyGecko"
+msgstr "Загрузить PyGecko"
 
-msgid "Unique Mode"
-msgstr ""
+#, fuzzy
+msgid "PyGecko settings"
+msgstr "Настройка вида"
 
-msgid "Mii Maker Mode"
-msgstr ""
+msgid "Some guy who doesn't want to be named."
+msgstr "Какой то чел, который не захотел называть имя"
 
-msgid "Smash Bros Mode"
-msgstr ""
-
-msgid "Karaoke Mode"
-msgstr ""
-
-msgid "Art Atelier Mode"
-msgstr ""
-
-msgid "Download languages"
-msgstr "Скачать языки"
-
-msgid "Select language"
-msgstr "Выбор языка"
-
-msgid "Download"
-msgstr "Скачать"
-
-msgid "Languages"
-msgstr "Языки"
-
-msgid "Default"
-msgstr "По-умолчанию"
-
-msgid "Brazilian"
-msgstr "Бразильский"
-
-msgid "English"
-msgstr "Английский"
-
-msgid "Chinese"
-msgstr "Китайский"
-
-msgid "Chinese_tr"
-msgstr "Traditional Chinese"
-
-msgid "French"
-msgstr "Французский"
-
-msgid "German"
-msgstr "Немецкий"
-
-msgid "Hungarian"
-msgstr "Иврит"
-
-msgid "Italian"
-msgstr "Итальянский"
-
-msgid "Spanish"
-msgstr "Испанский"
-
-msgid "Swedish"
-msgstr "Шведский"
-
-msgid "Greek"
-msgstr "Греческий"
-
-msgid "Portuguese"
-msgstr "Португальский"
-
-msgid "Japanese"
-msgstr "Японский"
-
+#: src/Application.cpp:236
 msgid "Loaded language"
 msgstr "Загруженный язык"
 
+#: src/Application.cpp:241
 msgid "Reloaded logger to change IP to settings IP"
 msgstr ""
 
+#: src/Application.cpp:245
 msgid "Loaded HID settings"
 msgstr "Настройки HID загружены"
 
+#: src/Application.cpp:249
 msgid "Loaded resources"
 msgstr "Ресурсы загружены"
 
+#: src/Application.cpp:253
 msgid "Loading game list"
 msgstr "Загрузка списка игр"
 
+#: src/Application.cpp:256
 msgid "Loading Music"
 msgstr "Загрузка музыки"
 
+#: src/Application.cpp:272
 msgid "Initializing main"
 msgstr "Основная инициализация"
 
-msgid "Download languages"
-msgstr "Загрузка языков"
-
-msgid "Connecting.."
-msgstr "Соединение"
-
-msgid "Getting file list"
-msgstr "Получение списка файлов"
-
-msgid "Downloading files"
-msgstr "Загрузка файлов"
-
-msgid "Languages files:"
-msgstr "Языковые файлы:"
-
-msgid "files left"
-msgstr "осталось файлов"
-
-msgid "Download 3D Covers"
-msgstr "Загрузка 3D обложек"
-
-msgid "Ok
+#: src/gui/MessageBox.cpp:93
+msgid "Ok"
 msgstr ""
 
+#: src/gui/MessageBox.cpp:94
 msgid "Cancel"
 msgstr "Отмена"
 
+#: src/gui/MessageBox.cpp:95
 msgid "Yes"
 msgstr "Да"
 
+#: src/gui/MessageBox.cpp:96
 msgid "No"
 msgstr "Нет"
 
-msgid "Loading file"
-msgstr "Загрузка файла"
+#: src/language/UpdateLanguage.cpp:36 src/menu/SettingsMenu.cpp:56
+msgid "Download languages"
+msgstr "Скачать языки"
 
-msgid "Writing list to SD"
-msgstr "Запись списка на SD"
+#: src/language/UpdateLanguage.cpp:57 src/network/GameImageDownloader.cpp:55
+msgid "Connecting.."
+msgstr "Соединение"
 
+#: src/language/UpdateLanguage.cpp:62
+msgid "Getting file list"
+msgstr "Получение списка файлов"
+
+#: src/language/UpdateLanguage.cpp:118
+msgid "Languages files:"
+msgstr "Языковые файлы:"
+
+#: src/language/UpdateLanguage.cpp:124 src/network/GameImageDownloader.cpp:159
+#, fuzzy
+msgid "files left."
+msgstr "осталось файлов"
+
+#: src/language/UpdateLanguage.cpp:138 src/network/GameImageDownloader.cpp:251
+msgid "Downloading files"
+msgstr "Загрузка файлов"
+
+#: src/menu/CreditsMenu.cpp:69
+msgid "Loadiine GX2 - Aroma"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:76
+msgid "Official Site:"
+msgstr "Официальный сайт"
+
+#: src/menu/CreditsMenu.cpp:89
+msgid "Original project:"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:102
+msgid "Port to aroma:"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:108
+msgid "Suprapote"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:115
+msgid "Testing:"
+msgstr "Тестироване:"
+
+#: src/menu/CreditsMenu.cpp:121
+msgid "Cyan / Maschell / n1ghty / OnionKnight and many more"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:128
+msgid "Social Presence:"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:141
+msgid "Based on:"
+msgstr "Основан на:"
+
+#: src/menu/CreditsMenu.cpp:147
+msgid "Loadiine v4.0 by Golden45 and Dimok"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:154
+msgid "Big thanks to:"
+msgstr "Большое спасибо:"
+
+#: src/menu/CreditsMenu.cpp:160
+msgid "lustar for GameTDB and hosting covers / disc images"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:167
+msgid "Marionumber1 for his kernel exploit"
+msgstr ""
+
+#: src/menu/CreditsMenu.cpp:174
+msgid "The whole libwiiu team and it's contributors."
+msgstr ""
+
+#: src/menu/GameLauncherMenu.cpp:53
+msgid "Extra Save:"
+msgstr ""
+
+#: src/menu/GameLauncherMenu.cpp:54
+#, fuzzy
+msgid "Enable DLC On SD:"
+msgstr "Поддержка DLC"
+
+#: src/menu/GameLauncherMenu.cpp:77
+msgid "Update Folder"
+msgstr "Update каталог"
+
+#: src/menu/GameLauncherMenu.cpp:78
+msgid "Save Mode"
+msgstr "Режим сохранений"
+
+#: src/menu/GameLauncherMenu.cpp:79 src/menu/SettingsMenu.cpp:77
+msgid "Launch Mode"
+msgstr "Способ запуска"
+
+#: src/menu/GameLauncherMenu.cpp:90 src/menu/GameLauncherMenu.cpp:95
+msgid "<Settings Default>"
+msgstr "Сброс настроек"
+
+#: src/menu/GameLauncherMenu.cpp:493
+msgid "Saving game settings!"
+msgstr "Настройки сохранений игры"
+
+#: src/menu/SettingsMenu.cpp:32
+msgid "Off"
+msgstr "Выкл"
+
+#: src/menu/SettingsMenu.cpp:33
+msgid "On"
+msgstr "Вкл"
+
+#: src/menu/SettingsMenu.cpp:38
+msgid "Icon Carousel"
+msgstr "Карусель иконок"
+
+#: src/menu/SettingsMenu.cpp:39
+msgid "Grid View"
+msgstr "Сетка"
+
+#: src/menu/SettingsMenu.cpp:40
+msgid "Cover Carousel"
+msgstr "Карусель обложек"
+
+#: src/menu/SettingsMenu.cpp:53
+msgid "Background customizations"
+msgstr "Настройка фона"
+
+#: src/menu/SettingsMenu.cpp:53
+msgid "GUI"
+msgstr "Интерфейс"
+
+#: src/menu/SettingsMenu.cpp:53
+msgid "Game View Selection"
+msgstr "Отображение списка игр"
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Adjust log server IP and port"
+msgstr "Адрес:порт лог-сервера"
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Customize games path"
+msgstr "Настройка пути игр"
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Customize save path"
+msgstr "Настройка пути сохранений"
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Loader"
+msgstr "Загрузчик"
+
+#: src/menu/SettingsMenu.cpp:54
+msgid "Set save mode"
+msgstr "Задать режим сохранений"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Game"
+msgstr "Игра"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "HID settings"
+msgstr "Настройка вида"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Launch method selection"
+msgstr "Выбор метода запуска"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Log server control"
+msgstr "Управление ло-сервером"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Read and write memory"
+msgstr "Чтение и запись памяти"
+
+#: src/menu/SettingsMenu.cpp:55
+msgid "Turn off the screen Gamepad"
+msgstr "Выключение экрана Wii U pad"
+
+#: src/menu/SettingsMenu.cpp:56 src/menu/SettingsMenu.cpp:87
+msgid "Languages"
+msgstr "Языки"
+
+#: src/menu/SettingsMenu.cpp:56
+msgid "Select language"
+msgstr "Выбор языка"
+
+#: src/menu/SettingsMenu.cpp:57
+msgid "Credits"
+msgstr "Авторы"
+
+#: src/menu/SettingsMenu.cpp:57
+msgid "Credits to all contributors"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:62
+msgid "Game View TV"
+msgstr "Отображение на ТВ"
+
+#: src/menu/SettingsMenu.cpp:63
+msgid "Game View DRC"
+msgstr "Отображение на планшете"
+
+#: src/menu/SettingsMenu.cpp:68
+msgid "Show Game Settings"
+msgstr "Показать настройки игры"
+
+#: src/menu/SettingsMenu.cpp:69
+msgid "Host IP"
+msgstr "IP адрес хоста"
+
+#: src/menu/SettingsMenu.cpp:70
+msgid "Game Path"
+msgstr "Путь игры"
+
+#: src/menu/SettingsMenu.cpp:71
+msgid "Game Save Path"
+msgstr "Путь сохранений игры"
+
+#: src/menu/SettingsMenu.cpp:72
+msgid "Game Save Mode"
+msgstr "Режим сохранений игры"
+
+#: src/menu/SettingsMenu.cpp:78
+#, fuzzy
+msgid "Log Server Control"
+msgstr "Управление ло-сервером"
+
+#: src/menu/SettingsMenu.cpp:79
+msgid "Load PyGecko"
+msgstr "Загрузить PyGecko"
+
+#: src/menu/SettingsMenu.cpp:80
+msgid "Enable Padcon"
+msgstr "R-Stick отключает экран"
+
+#: src/menu/SettingsMenu.cpp:81
+msgid "HID-Pad"
+msgstr ""
+
+#: src/menu/SettingsMenu.cpp:86
+msgid "Download"
+msgstr "Скачать"
+
+#: src/network/GameImageDownloader.cpp:42
+msgid "Download 3D Covers"
+msgstr "Загрузка 3D обложек"
+
+#: src/utils/FileReplacer.cpp:120
 msgid "Creating filelist.txt:"
 msgstr "Создание filelist.txt:"
 
+#: src/utils/FileReplacer.cpp:124
 msgid "entries found"
 msgstr "записей найдено"
 
-msgid "Enable DLC no legitimate"
-msgstr ""
+#~ msgid "Default"
+#~ msgstr "По-умолчанию"
+
+#~ msgid "Brazilian"
+#~ msgstr "Бразильский"
+
+#~ msgid "English"
+#~ msgstr "Английский"
+
+#~ msgid "Chinese"
+#~ msgstr "Китайский"
+
+#~ msgid "Chinese_tr"
+#~ msgstr "Traditional Chinese"
+
+#~ msgid "French"
+#~ msgstr "Французский"
+
+#~ msgid "German"
+#~ msgstr "Немецкий"
+
+#~ msgid "Hungarian"
+#~ msgstr "Иврит"
+
+#~ msgid "Italian"
+#~ msgstr "Итальянский"
+
+#~ msgid "Spanish"
+#~ msgstr "Испанский"
+
+#~ msgid "Swedish"
+#~ msgstr "Шведский"
+
+#~ msgid "Greek"
+#~ msgstr "Греческий"
+
+#~ msgid "Portuguese"
+#~ msgstr "Португальский"
+
+#~ msgid "Japanese"
+#~ msgstr "Японский"
+
+#~ msgid "Loading file"
+#~ msgstr "Загрузка файла"
+
+#~ msgid "Writing list to SD"
+#~ msgstr "Запись списка на SD"
