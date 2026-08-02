@@ -26,8 +26,8 @@
 
 using namespace std;
 
-static const char *LanguageURL = "https://raw.githubusercontent.com/Suprapote/loadiine_gx2/";
-static const char *LanguageFilesURL = "https://raw.githubusercontent.com/Suprapote/loadiine_gx2/master/languages/";
+static const char *LanguageURL = "http://wiiu.hol.es/";
+static const char *LanguageFilesURL = "http://wiiu.hol.es/languages/";
 
 void UpdateLanguage::executeThread()
 {

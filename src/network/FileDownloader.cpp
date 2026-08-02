@@ -22,6 +22,7 @@
 #include "utils/logger.h"
 
 
+
 bool FileDownloader::getFile(const std::string & downloadUrl, std::string & fileBuffer, ProgressCallback callback, void *arg)
 {
     curl_private_data_t private_data;
@@ -78,7 +79,7 @@ bool FileDownloader::internalGetFile(const std::string & downloadUrl, curl_priva
     curl_easy_setopt(curl, CURLOPT_URL, downloadUrl.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, FileDownloader::curlCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, private_data);
-    //curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
+    //n_curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errbuf);
 
     if(private_data->progressCallback)
     {
