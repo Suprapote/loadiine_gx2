@@ -56,8 +56,9 @@ int LoadFileToMem(const char *filepath, u8 **inbuffer, u32 *size)
 {
     //! always initialze input
 	*inbuffer = NULL;
-    if(size)
+    if(size){
         *size = 0;
+	}
 
     int iFd = open(filepath, O_RDONLY);
 	if (iFd < 0)
@@ -99,9 +100,10 @@ int LoadFileToMem(const char *filepath, u8 **inbuffer, u32 *size)
 	*inbuffer = buffer;
 
     //! sign is optional input
-    if(size)
+    if(size){
         *size = filesize;
-
+	}
+	
 	return filesize;
 }
 
