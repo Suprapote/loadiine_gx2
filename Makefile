@@ -240,7 +240,7 @@ translations: $(wildcard $(PROJECTDIR)/languages/*.lang)
 	@$(bin2o)
 
 #---------------------------------------------------------------------------------
-%.wav.o : %.wav
+%.wav.o %_wav.h : %.wav
 	@echo $(notdir $<)
 	@$(bin2o)
 
