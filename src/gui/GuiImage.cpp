@@ -170,7 +170,7 @@ void GuiImage::setImageColor(const GX2Color & c, int idx)
     }
 }
 
-void GuiImage::setSize(int w, int h)
+void GuiImage::setSize(f32 w, f32 h)
 {
 	width = w;
 	height = h;

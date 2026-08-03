@@ -70,7 +70,7 @@ public:
     //!Change ImageColor
     void setImageColor(const GX2Color & c, s32 idx = -1);
     //!Change ImageColor
-    void setSize(s32 w, s32 h);
+    void setSize(f32 w, f32 h);
 
     void setPrimitiveVertex(s32 prim, const f32 *pos, const f32 *tex, u32 count);
 
