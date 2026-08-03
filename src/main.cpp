@@ -21,15 +21,10 @@ extern "C" int Menu_Main(void)
     //!*******************************************************************
     //! do OS (for acquire) and sockets first so we got logging
     //InitOSFunctionPointers();
-    //InitSocketFunctionPointers();
+    socket_lib_init();
 
     log_init();
     log_printf("Starting Loadiine GX2 " LOADIINE_VERSION "\n");
-
-    //! Initialize the socket library. Without this libcurl (used by the
-    //! language/cover downloaders) crashes with a DSI exception on the
-    //! first transfer because the nsysnet socket stack is not set up.
-    socket_lib_init();
 
     /*InitFSFunctionPointers();
     InitGX2FunctionPointers();
