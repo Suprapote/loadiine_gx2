@@ -18,28 +18,6 @@ const char *GetRev()
 {
 	return GIT_REV;
 }
-EOF
-
-    rev_date=`date -u +%Y%m%d%H%M%S`
-
-    cat <<EOF > ./meta/meta.xml
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<app version="1">
-  <name>Loadiine GX2</name>
-  <coder>Dimok, Maschell, n1ghty, dibas</coder>
-  <version>0.3 r$rev_new</version>
-  <release_date>$rev_date</release_date>
-  <short_description>WiiU game loader</short_description>
-  <long_description>Loads games from SD card.
-
-  Compatibility list:
-  http://wiki.gbatemp.net/wiki/Loadiine_compatibility_list
-
-  Sources:
-  https://github.com/dimok789/loadiine_gx2
-  </long_description>
-</app>
-EOF
 
 fi
 
