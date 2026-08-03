@@ -527,14 +527,6 @@ void MainWindow::OnGameLoadFinish(GameLauncher * launcher, const discHeader *hea
 					log_printf("Using Super Smash Bros cfg\n");
 					LOADIINE_MODE = LOADIINE_MODE_SMASH_BROS;
 					break;
-				case LOADIINE_MODE_KARAOKE:
-					log_printf("Using KARAOKE BY U Joysound cfg\n");
-					LOADIINE_MODE = LOADIINE_MODE_KARAOKE;
-					break;
-				case LOADIINE_MODE_ART_ATELIER:
-					log_printf("Using Art Academy Atelier cfg\n");
-					LOADIINE_MODE = LOADIINE_MODE_ART_ATELIER;
-					break;
 				default:
 					log_printf("No valid value found. Using launch method from settings\n");
 					break;
