@@ -18,6 +18,7 @@ const char *GetRev()
 {
 	return GIT_REV;
 }
+EOF
 
 fi
 
